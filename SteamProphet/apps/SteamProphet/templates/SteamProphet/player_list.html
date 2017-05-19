@@ -1,4 +1,5 @@
 {% extends 'SteamProphet/base.html' %}
+{% load humanize %}
 
 {% block content %}
     <div class="container">
@@ -15,7 +16,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'player' pk=player.pk %}">{{ player.name }}</a></td>
-                        <td>{{ player.score }}</td>
+                        <td>{{ player.score|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

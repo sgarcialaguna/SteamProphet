@@ -1,4 +1,5 @@
 import requests
+import time
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -23,3 +24,5 @@ class Command(BaseCommand):
                 price = 0.0
             Game.objects.create(appID=game['appid'], name=game['name'], owners=game['owners'],
                                 ownersVariance=game['owners_variance'], price=price)
+            # Rate limiter
+            time.sleep(0.5)

@@ -1,4 +1,64 @@
 {% extends 'SteamProphet/base.html' %}
+{% load humanize %}
 
 {% block content %}
+    <div class="container">
+        <h1 class="mb-4">Game: {{ object.name }}</h1>
+
+        <div class="row mb-2 justify-content-start">
+            <div class="col-lg-1"><a href="{{ game.steamspyURL }}">SteamSpy</a></div>
+            <div class="col-lg-1"><a href="{{ game.steamURL }}">Steam</a></div>
+        </div>
+
+        <div class="mb-2">
+
+        </div>
+
+        <div>
+            <b>Release date</b>
+        </div>
+        <div class="mb-2">
+            {{ game.releaseDate }}
+        </div>
+
+        <div>
+            <b>Lowest price</b>
+        </div>
+        <div class="mb-2">
+            $ {{ game.price }}
+        </div>
+
+        <div>
+            <b>Owners</b>
+        </div>
+        <div class="mb-2">
+            {{ game.owners }}
+        </div>
+
+        <div>
+            <b>Owners Variance</b>
+        </div>
+        <div class="mb-2">
+            {{ game.ownersVariance }}
+        </div>
+
+        <div>
+            <b>Score</b>
+        </div>
+        <div>
+            {{ game.price }} * ({{ game.owners|intcomma }} - {{ game.ownersVariance|intcomma }})
+        </div>
+        <div>
+            = {{ game.price }} * {{ game.ownersLowerBound|intcomma }}
+        </div>
+        <div>
+            = {{ game.unroundedScore|intcomma }}
+        </div>
+        <div>
+           <b>Rounded down to the nearest thousand:</b>
+        </div>
+        <div>
+            = <b>{{ game.score|intcomma }}</b>
+        </div>
+    </div>
 {% endblock %}

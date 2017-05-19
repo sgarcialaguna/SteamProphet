@@ -1,9 +1,10 @@
 {% extends 'SteamProphet/base.html' %}
+{% load humanize %}
 
 {% block content %}
     <div class="container">
         <h2 class="mb-4">Player: {{ object.name }}</h2>
-        <h2 class="mb-4">Score: {{ object.score }}</h2>
+        <h2 class="mb-4">Score: {{ object.score|intcomma }}</h2>
         <table class="table">
             <thead>
 
@@ -17,11 +18,11 @@
             {% for pick in picks %}
                 <tr>
                     {% if pick.joker %}
-                        <td><b>{{ pick.game.name }}</b></td>
+                        <td><a href="{% url 'game' pk=pick.game.pk %}"><b>{{ pick.game.name }}</b></a></td>
                     {% else %}
-                        <td>{{ pick.game.name }}</td>
+                        <td><a href="{% url 'game' pk=pick.game.pk %}">{{ pick.game.name }}</a></td>
                     {% endif %}
-                    <td>{{ pick.score }}</td>
+                    <td>{{ pick.score|intcomma }}</td>
                 </tr>
             {% endfor %}
             </tbody>
