@@ -23,6 +23,7 @@ class Game(models.Model):
 class Pick(models.Model):
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
+    joker = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('player', 'game')
