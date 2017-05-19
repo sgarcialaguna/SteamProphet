@@ -36,6 +36,7 @@ class PlayerDetailView(DetailView):
 
 class PlayerListView(ListView):
     model = Player
+    queryset = Player.objects.all().prefetch_related('pick_set__game')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
