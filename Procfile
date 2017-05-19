@@ -1,1 +1,1 @@
-web: gunicorn steamprophet.wsgi --log-file -
+web: gunicorn SteamProphet.wsgi --log-file -
