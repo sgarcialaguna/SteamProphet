@@ -12,11 +12,11 @@
                 </tr>
             </thead>
             <tbody>
-                {% for player in player_list %}
+                {% for game in game_list %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'player' pk=player.pk %}">{{ player.name }}</a></td>
-                        <td>{{ player.score|intcomma }}</td>
+                        <td><a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a></td>
+                        <td>{{ game.score|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -11,8 +11,23 @@
     <title>The Pod Steam Prophet</title>
 </head>
 <body>
+
 <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-    <a class="navbar-brand" href="{% url 'player_list' %}">Home</a>
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="navbar-brand">The Pod Steam Prophet</div>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'player_list' %}">Players</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'games_list' %}">Games</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 {% block content %}

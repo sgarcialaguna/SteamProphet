@@ -39,10 +39,23 @@ class PlayerListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        players = Player.objects.all().prefetch_related('pick_set__game')
+        players = context['player_list']
         for player in players:
             player.score = services.computePlayerScore(player)
-        players = sorted(players, key=attrgetter('score'), reverse=True)
-        context['players'] = players
+        context['player_list'] = sorted(players, key=attrgetter('score'), reverse=True)
         return context
+
+
+class GameListView(ListView):
+    model = Game
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        games = context['game_list']
+        for game in games:
+            game.score = services.computeGameScore(game)
+        context['game_list'] = sorted(games, key=attrgetter('score'), reverse=True)
+        return context
+
+
 
