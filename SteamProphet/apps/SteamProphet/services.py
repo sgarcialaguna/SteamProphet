@@ -10,8 +10,13 @@ def computeGameScore(game):
 def computePlayerScore(player):
     score = 0
     for pick in player.pick_set.all():
-        gameScore = computeGameScore(pick.game)
-        if pick.joker:
-            gameScore *= 2
+        gameScore = computePickScore(pick)
         score += gameScore
     return score
+
+
+def computePickScore(pick):
+    gameScore = computeGameScore(pick.game)
+    if pick.joker:
+        gameScore *= 2
+    return gameScore

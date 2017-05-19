@@ -1,0 +1,32 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="mb-4">Player: {{ object.name }}</h2>
+        <h2 class="mb-4">Score: {{ object.score }}</h2>
+        <table class="table">
+            <thead>
+
+            </thead>
+            <tr>
+                <th>Pick</th>
+                <th>Score</th>
+            </tr>
+
+            <tbody>
+            {% for pick in picks %}
+                <tr>
+                    {% if pick.joker %}
+                        <td><b>{{ pick.game.name }}</b></td>
+                    {% else %}
+                        <td>{{ pick.game.name }}</td>
+                    {% endif %}
+                    <td>{{ pick.score }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+        <p>Player picks. Jokers are marked in <b>bold</b></p>
+    </div>
+{% endblock %}
