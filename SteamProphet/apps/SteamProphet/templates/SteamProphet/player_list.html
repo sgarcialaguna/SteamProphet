@@ -1,0 +1,7 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+{% for player in players %}
+    <div>{{ player.name }} - {{ player.score }}</div>
+{% endfor %}
+{% endblock %}
