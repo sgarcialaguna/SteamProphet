@@ -1,7 +1,24 @@
 {% extends 'SteamProphet/base.html' %}
 
 {% block content %}
-{% for player in players %}
-    <div>{{ player.name }} - {{ player.score }}</div>
-{% endfor %}
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.score }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
