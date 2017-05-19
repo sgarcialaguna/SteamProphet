@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, ListView
 
 from SteamProphet.apps.SteamProphet import services
 from SteamProphet.apps.SteamProphet.models import Game, Player
@@ -19,6 +19,7 @@ class GameDetailView(DetailView):
         game.unroundedScore = game.price * game.ownersLowerBound
         return context
 
+
 class PlayerDetailView(DetailView):
     model = Player
 
@@ -33,8 +34,8 @@ class PlayerDetailView(DetailView):
         return context
 
 
-class PlayerListView(TemplateView):
-    template_name = 'SteamProphet/player_list.html'
+class PlayerListView(ListView):
+    model = Player
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -44,3 +45,4 @@ class PlayerListView(TemplateView):
         players = sorted(players, key=attrgetter('score'), reverse=True)
         context['players'] = players
         return context
+
