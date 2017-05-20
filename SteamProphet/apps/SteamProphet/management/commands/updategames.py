@@ -26,7 +26,7 @@ class Command(BaseCommand):
                 if game.price == 0:
                     game.price = newPrice
                 else:
-                    game.price = min(game.price, gameJSON['price'])
+                    game.price = min(game.price, newPrice)
             game.save()
             # Rate limiter
             time.sleep(0.5)
