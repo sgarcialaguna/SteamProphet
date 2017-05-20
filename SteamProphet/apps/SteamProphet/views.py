@@ -15,8 +15,8 @@ class GameDetailView(DetailView):
         game.score = services.computeGameScore(game)
         game.steamspyURL = 'https://steamspy.com/app/{}/'.format(game.appID)
         game.steamURL = 'https://store.steampowered.com/app/{}/'.format(game.appID)
-        game.ownersLowerBound = game.owners - game.ownersVariance
-        game.unroundedScore = game.price * game.ownersLowerBound
+        game.playersLowerBound = game.players - game.playersVariance
+        game.unroundedScore = game.price * game.playersLowerBound
         return context
 
 

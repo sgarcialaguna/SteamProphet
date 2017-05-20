@@ -1,8 +1,8 @@
 def computeGameScore(game):
     if not game.price:
         return 0
-    owners = max(0, game.owners - game.ownersVariance)
-    score = owners * game.price
+    players = max(0, game.players - game.playersVariance)
+    score = players * game.price
     score = score - score % 1000
     return int(score)
 

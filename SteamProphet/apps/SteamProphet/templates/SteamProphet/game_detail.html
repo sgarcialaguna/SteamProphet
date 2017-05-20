@@ -29,27 +29,27 @@
         </div>
 
         <div>
-            <b>Owners</b>
+            <b>Players</b>
         </div>
         <div class="mb-2">
-            {{ game.owners }}
+            {{ game.players }}
         </div>
 
         <div>
-            <b>Owners Variance</b>
+            <b>Players Variance</b>
         </div>
         <div class="mb-2">
-            {{ game.ownersVariance }}
+            {{ game.playersVariance }}
         </div>
 
         <div>
             <b>Score</b>
         </div>
         <div>
-            {{ game.price }} * ({{ game.owners|intcomma }} - {{ game.ownersVariance|intcomma }})
+            {{ game.price }} * ({{ game.players|intcomma }} - {{ game.playersVariance|intcomma }})
         </div>
         <div>
-            = {{ game.price }} * {{ game.ownersLowerBound|intcomma }}
+            = {{ game.price }} * {{ game.playersLowerBound|intcomma }}
         </div>
         <div>
             = {{ game.unroundedScore|intcomma }}

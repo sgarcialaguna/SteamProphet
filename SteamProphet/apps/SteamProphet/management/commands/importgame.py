@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 price /= 100.0
             except (ValueError, TypeError):
                 price = 0.0
-            Game.objects.create(appID=game['appid'], name=game['name'], owners=game['owners'],
-                                ownersVariance=game['owners_variance'], price=price)
+            Game.objects.create(appID=game['appid'], name=game['name'], players=game['players'],
+                                playersVariance=game['players_variance'], price=price)
             # Rate limiter
             time.sleep(0.5)

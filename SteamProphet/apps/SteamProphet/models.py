@@ -12,8 +12,8 @@ class Game(models.Model):
     appID = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255, null=True)
     releaseDate = models.DateField(null=True, blank=True)
-    owners = models.PositiveIntegerField(default=0)
-    ownersVariance = models.PositiveIntegerField(default=0)
+    players = models.PositiveIntegerField(default=0)
+    playersVariance = models.PositiveIntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=6)
 
     def __str__(self):
