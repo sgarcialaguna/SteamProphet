@@ -1,3 +1,4 @@
+from dateutil.parser import *
 import requests
 import time
 from django.core.management.base import BaseCommand
@@ -27,6 +28,10 @@ class Command(BaseCommand):
                     game.price = newPrice
                 else:
                     game.price = min(game.price, newPrice)
+            gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}'.
+                                    format(game.appID)).json()
+            releaseDateString = gameJSON[game.appID]['data']['release_date']['date']
+            game.releaseDate = parse(releaseDateString)
             game.save()
             # Rate limiter
             time.sleep(0.5)
