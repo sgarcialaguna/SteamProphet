@@ -12,7 +12,8 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         for game in Game.objects.all():
-            gameJSON = requests.get('https://steamspy.com/api.php?request=appdetails&appid={}'.format(game.appID))
+            gameJSON = requests.get('https://steamspy.com/api.php?request=appdetails&appid={}'.
+                                    format(game.appID)).json()
             game.players = gameJSON['players']
             game.playersVariance = gameJSON['players_variance']
             if game.price != gameJSON['price']:
