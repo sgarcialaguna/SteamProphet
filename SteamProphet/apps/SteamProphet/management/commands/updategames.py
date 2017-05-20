@@ -30,8 +30,8 @@ class Command(BaseCommand):
                     game.price = min(game.price, newPrice)
             gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}'.
                                     format(game.appID)).json()
-            releaseDateString = gameJSON[game.appID]['data']['release_date']['date']
-            game.releaseDate = parse(releaseDateString)
+            releaseDateString = gameJSON[str(game.appID)]['data']['release_date']['date']
+            game.releaseDate = parse(releaseDateString).date()
             game.save()
             # Rate limiter
             time.sleep(0.5)
