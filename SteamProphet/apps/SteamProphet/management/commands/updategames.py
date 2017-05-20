@@ -16,9 +16,15 @@ class Command(BaseCommand):
                                     format(game.appID)).json()
             game.players = gameJSON['players_forever']
             game.playersVariance = gameJSON['players_forever_variance']
-            if game.price != gameJSON['price']:
+            newPrice = gameJSON['price']
+            try:
+                newPrice = float(newPrice)
+                newPrice /= 100.0
+            except (ValueError, TypeError):
+                newPrice = 0.0
+            if game.price != newPrice:
                 if game.price == 0:
-                    game.price = gameJSON['price']
+                    game.price = newPrice
                 else:
                     game.price = min(game.price, gameJSON['price'])
             game.save()
