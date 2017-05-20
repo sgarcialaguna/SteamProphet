@@ -14,8 +14,8 @@ class Command(BaseCommand):
         for game in Game.objects.all():
             gameJSON = requests.get('https://steamspy.com/api.php?request=appdetails&appid={}'.
                                     format(game.appID)).json()
-            game.players = gameJSON['players']
-            game.playersVariance = gameJSON['players_variance']
+            game.players = gameJSON['players_forever']
+            game.playersVariance = gameJSON['players_forever_variance']
             if game.price != gameJSON['price']:
                 if game.price == 0:
                     game.price = gameJSON['price']
