@@ -10,11 +10,11 @@ class Player(models.Model):
 
 class Game(models.Model):
     appID = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     releaseDate = models.DateField(null=True, blank=True)
     players = models.PositiveIntegerField(default=0)
     playersVariance = models.PositiveIntegerField(default=0)
-    price = models.DecimalField(decimal_places=2, max_digits=6)
+    price = models.DecimalField(decimal_places=2, max_digits=6, default=0)
 
     def __str__(self):
         return self.name or str(self.appID)

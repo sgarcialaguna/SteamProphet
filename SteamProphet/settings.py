@@ -81,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SteamProphet',
-        'USER': 'SteamProphet',
-        'PASSWORD': 'C1tIcEwl5O0bCQSlYrU7'
+        'USER': os.getenv('PGUSER'),
+        'PASSWORD': os.getenv('PGPASSWORD')
     }
 }
 
