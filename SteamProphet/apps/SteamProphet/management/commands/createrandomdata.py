@@ -12,9 +12,9 @@ from SteamProphet.apps.SteamProphet.models import Game, Player, Pick
 def assignPicks(player):
     games = list(Game.objects.all())
     random.shuffle(games)
-    for game in games[:5]:
+    for game in games[:4]:
         Pick.objects.create(game=game, player=player, joker=False)
-    Pick.objects.create(game=games[5], player=player, joker=True)
+    Pick.objects.create(game=games[4], player=player, joker=True)
 
 
 class Command(BaseCommand):
