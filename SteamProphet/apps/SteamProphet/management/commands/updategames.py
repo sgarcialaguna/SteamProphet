@@ -31,7 +31,11 @@ class Command(BaseCommand):
             gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}'.
                                     format(game.appID)).json()
             releaseDateString = gameJSON[str(game.appID)]['data']['release_date']['date']
-            game.releaseDate = parse(releaseDateString).date()
+            try:
+                game.releaseDate = parse(releaseDateString).date()
+            except ValueError:
+                print('{} has invalid release date {}'.format(game.name, releaseDateString))
+                game.releaseDate = None
             game.save()
             # Rate limiter
             time.sleep(0.5)
