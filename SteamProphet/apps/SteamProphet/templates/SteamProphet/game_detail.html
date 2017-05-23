@@ -44,7 +44,7 @@
             <b>Score</b>
         </div>
         <div>
-            {{ game.price }} * ({{ game.players|intcomma }} - {{ game.playersVariance|intcomma }})
+            {{ game.price }} * max(0, {{ game.players|intcomma }} - {{ game.playersVariance|intcomma }})
         </div>
         <div>
             = {{ game.price }} * {{ game.playersLowerBound|intcomma }}
