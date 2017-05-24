@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     game.price = newPrice
                 else:
                     game.price = min(game.price, newPrice)
-            gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}'.
+            gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}&l=english'.
                                     format(game.appID)).json()
             releaseDateString = gameJSON[str(game.appID)]['data']['release_date']['date']
             try:
