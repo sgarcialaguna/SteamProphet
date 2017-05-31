@@ -132,6 +132,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 
 if 'SENDGRID_USERNAME' in os.environ:
+    DEFAULT_FROM_EMAIL = 'Santiago García <donotreply@frozen-coast-72498.herokuapp.com>'
     EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_PORT = 587
