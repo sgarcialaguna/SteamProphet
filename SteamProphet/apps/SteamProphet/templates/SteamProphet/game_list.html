@@ -21,7 +21,7 @@
                         <td><a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a></td>
                         <td>{{ game.releaseDate }}</td>
                         <td>{{ game.playersLowerBound }}</td>
-                        <td>$ {{ game.price }}</td>
+                        <td>$&nbsp;{{ game.price }}</td>
                         <td>{{ game.score|intcomma }}</td>
                     </tr>
                 {% endfor %}
