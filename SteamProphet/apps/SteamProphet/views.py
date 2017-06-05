@@ -55,7 +55,7 @@ class GameListView(ListView):
         context = super().get_context_data(**kwargs)
         games = context['game_list']
         for game in games:
-            game.playersLowerBound = game.players - game.playersVariance
+            game.playersLowerBound = max(0, game.players - game.playersVariance)
             game.score = services.computeGameScore(game)
         context['game_list'] = sorted(games, key=attrgetter('score'), reverse=True)
         return context
