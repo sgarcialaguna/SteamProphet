@@ -49,11 +49,13 @@ class PlayerListView(ListView):
 
 class GameListView(ListView):
     model = Game
+    queryset = Game.objects.filter(releaseDate__isnull=False).order_by('releaseDate')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         games = context['game_list']
         for game in games:
+            game.playersLowerBound = game.players - game.playersVariance
             game.score = services.computeGameScore(game)
         context['game_list'] = sorted(games, key=attrgetter('score'), reverse=True)
         return context
