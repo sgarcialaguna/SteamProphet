@@ -25,7 +25,11 @@ def parsePost(post):
     joker = postbody.select('span[style="font-weight: bold"]')[0].text
     picks = []
     for string in postbody.stripped_strings:
-        picks.append(Pick(player=player, game=Game.objects.get(name=string), joker=string == joker))
+        try:
+            picks.append(Pick(player=player, game=Game.objects.get(name=string), joker=string == joker))
+        except:
+            print('Could not create Pick {} picks {}'.format(player, string))
+            raise
     return picks
 
 
