@@ -1,6 +1,8 @@
 import requests
+from dateutil import relativedelta, parser
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils.timezone import now
 
 from SteamProphet.apps.SteamProphet.models import Game
 
@@ -11,5 +13,11 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
+        nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
+        nextSunday = nextMonday + relativedelta.relativedelta(weekday=relativedelta.SU)
         for gameJSON in upcomingGamesJSON:
-            Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'])
+            releasedate = parser.parse(gameJSON['release_date']).date()
+            if releasedate < nextMonday or releasedate > nextSunday:
+                continue
+            if not Game.objects.filter(appID=gameJSON['steam_id']).exists():
+                Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'])

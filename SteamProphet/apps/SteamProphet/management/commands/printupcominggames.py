@@ -1,7 +1,9 @@
 import datetime
 
+from dateutil import relativedelta
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils.timezone import now
 
 from SteamProphet.apps.SteamProphet.models import Game
 
@@ -11,8 +13,8 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        startDate = datetime.date(month=6, day=5, year=2017)
-        endDate = datetime.date(month=6, day=11, year=2017)
-        games = Game.objects.filter(releaseDate__range=(startDate, endDate))
+        nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
+        nextSunday = nextMonday + relativedelta.relativedelta(weekday=relativedelta.SU)
+        games = Game.objects.filter(releaseDate__range=(nextMonday, nextSunday))
         for game in games:
             print('[URL=https://store.steampowered.com/app/{}/]{}[/URL]'.format(game.appID, game.name))
