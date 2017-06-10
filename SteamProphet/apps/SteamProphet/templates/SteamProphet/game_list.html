@@ -8,6 +8,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Week</th>
                     <th>Release Date</th>
                     <th>Players (lower bound)</th>
                     <th>Price</th>
@@ -19,6 +20,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a></td>
+                        <td>{{ game.week }}</td>
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td>{{ game.playersLowerBound }}</td>
                         <td>$&nbsp;{{ game.price }}</td>
