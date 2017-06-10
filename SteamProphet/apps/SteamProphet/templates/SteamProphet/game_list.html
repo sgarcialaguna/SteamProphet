@@ -19,7 +19,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a></td>
-                        <td>{{ game.releaseDate }}</td>
+                        <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td>{{ game.playersLowerBound }}</td>
                         <td>$&nbsp;{{ game.price }}</td>
                         <td>{{ game.score|intcomma }}</td>
