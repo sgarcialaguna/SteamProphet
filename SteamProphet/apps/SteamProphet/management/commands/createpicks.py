@@ -22,9 +22,12 @@ def parsePost(post):
         return []
     player = Player.objects.get_or_create(name=playername)[0]
     postbody = post.select('.content')[0]
-    joker = postbody.select('span[style="font-weight: bold"]')[0].text
+    joker = postbody.select('span[style="font-weight: bold"]')[0].text.strip()
+    fallback = postbody.select('span[style="font-style: italic"]')[0].text.strip()
     picks = []
     for string in postbody.stripped_strings:
+        if string == fallback:
+            continue
         try:
             picks.append(Pick(player=player, game=Game.objects.get(name=string), joker=string == joker))
         except:
@@ -38,7 +41,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=4&t=2178'
+        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2208'
         soup = BeautifulSoup(requests.get(basepage).text, 'html5lib')
         pages = len(soup.select('.pagination'))
         for i in range(pages):
