@@ -30,4 +30,4 @@ class Pick(models.Model):
         unique_together = ('player', 'game')
 
     def __str__(self):
-        return '{} picks {}'.format(self.player, self.game)
+        return '{} picks {}{}'.format(self.player, self.game, ' (Joker)' if self.joker else '')
