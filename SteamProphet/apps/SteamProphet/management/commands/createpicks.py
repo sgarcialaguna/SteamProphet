@@ -29,7 +29,7 @@ def parsePost(post):
         if string == fallback:
             continue
         try:
-            picks.append(Pick(player=player, game=Game.objects.get(name=string), joker=string == joker))
+            picks.append(Pick(player=player, game=Game.objects.get(name__iexact=string), joker=string == joker))
         except:
             print('Could not create Pick {} picks {}'.format(player, string))
             raise
