@@ -10,6 +10,9 @@ from SteamProphet.apps.SteamProphet.models import Game
 class Command(BaseCommand):
     help = 'Imports the upcoming games'
 
+    def add_arguments(self, parser):
+        parser.add_argument('week', type=int)
+
     @transaction.atomic
     def handle(self, *args, **options):
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
@@ -20,4 +23,4 @@ class Command(BaseCommand):
             if releasedate < nextMonday or releasedate > nextSunday:
                 continue
             if not Game.objects.filter(appID=gameJSON['steam_id']).exists():
-                Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'])
+                Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'], week=options['week'])
