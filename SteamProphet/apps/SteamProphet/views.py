@@ -1,9 +1,12 @@
 from operator import attrgetter
 
-from django.views.generic import DetailView, ListView
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import get_object_or_404, render
+from django.utils.decorators import method_decorator
+from django.views.generic import DetailView, ListView, DeleteView
 
 from SteamProphet.apps.SteamProphet import services
-from SteamProphet.apps.SteamProphet.models import Game, Player
+from SteamProphet.apps.SteamProphet.models import Game, Player, Pick
 
 
 class GameDetailView(DetailView):
@@ -61,4 +64,28 @@ class GameListView(ListView):
         return context
 
 
+class DeleteGameView(DeleteView):
+    model = Game
 
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        game = get_object_or_404(Game, pk=kwargs['pk'])
+        lines = []
+        for pick in game.pick_set.all():
+            if pick.fallback:
+                lines.append('{} picked {} as their fallback game.'.format(pick.player.name, pick.game.name))
+                continue
+            line = '{} picked {}.'.format(pick.player.name, pick.game.name)
+            matchingFallback = Pick.objects.filter(game__week=game.week, player=pick.player, fallback=True).first()
+            if matchingFallback:
+                matchingFallback.fallback = False
+                matchingFallback.save()
+                line += ' {} becomes a regular pick.'.format(matchingFallback.game.name)
+            else:
+                line += ' They have no available fallback.'
+            lines.append(line)
+        game.delete()
+        return render(request, 'SteamProphet/game_deleted.html', {'game': game, 'lines': lines})

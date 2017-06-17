@@ -1,0 +1,13 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% for line in lines %}
+            <div class="mb-2">{{ line }}</div>
+        {% empty %}
+            No one picked {{ game.name }}
+        {% endfor %}
+
+        <a href="{% url 'games_list'%} ">Back to games list</a>
+    </div>
+{% endblock %}

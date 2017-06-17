@@ -58,5 +58,10 @@
         <div>
             = <b>{{ game.score|intcomma }}</b>
         </div>
+
+        {% if user.is_staff %}
+            <div class="mb-2"></div>
+            <a href="{% url 'delete_game' game.pk %}"><button type="button" class="btn btn-danger">Delete game</button></a>
+        {% endif %}
     </div>
 {% endblock %}
