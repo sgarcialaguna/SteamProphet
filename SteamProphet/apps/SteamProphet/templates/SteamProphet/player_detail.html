@@ -19,6 +19,8 @@
                 <tr>
                     {% if pick.joker %}
                         <td><a href="{% url 'game' pk=pick.game.pk %}"><b>{{ pick.game.name }}</b></a></td>
+                    {% elif pick.fallback%}
+                        <td><a href="{% url 'game' pk=pick.game.pk %}"><i>{{ pick.game.name }}</i></a></td>
                     {% else %}
                         <td><a href="{% url 'game' pk=pick.game.pk %}">{{ pick.game.name }}</a></td>
                     {% endif %}
@@ -28,6 +30,6 @@
             </tbody>
 
         </table>
-        <p>Player picks. Jokers are marked in <b>bold</b></p>
+        <p>Player picks. Jokers are marked in <b>bold</b>. Fallback games are marked in <i>italic</i>.</p>
     </div>
 {% endblock %}

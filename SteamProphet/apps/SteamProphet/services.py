@@ -16,6 +16,8 @@ def computePlayerScore(player):
 
 
 def computePickScore(pick):
+    if pick.fallback:
+        return 0
     gameScore = computeGameScore(pick.game)
     if pick.joker:
         gameScore *= 2

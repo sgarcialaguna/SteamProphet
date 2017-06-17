@@ -25,9 +25,15 @@ class Pick(models.Model):
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
     joker = models.BooleanField(default=False)
+    fallback = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('player', 'game')
 
     def __str__(self):
-        return '{} picks {}{}'.format(self.player, self.game, ' (Joker)' if self.joker else '')
+        string = '{} picks {}'.format(self.player, self.game)
+        if self.joker:
+            string += ' (Joker)'
+        elif self.fallback:
+            string += ' (Fallback)'
+        return string

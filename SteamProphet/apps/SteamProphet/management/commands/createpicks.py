@@ -22,14 +22,21 @@ def parsePost(post):
         return []
     player = Player.objects.get_or_create(name=playername)[0]
     postbody = post.select('.content')[0]
-    joker = postbody.select('span[style="font-weight: bold"]')[0].text.strip()
-    fallback = postbody.select('span[style="font-style: italic"]')[0].text.strip()
+    jokers = postbody.select('span[style="font-weight: bold"]')
+    fallbacks = postbody.select('span[style="font-style: italic"]')
+    joker = jokers[0].text.strip()
+    fallback = fallbacks[0].text.strip()
+    stripped_strings = list(postbody.stripped_strings)
+    assert(len(stripped_strings) == 7)
+    assert(len(jokers) == 1)
+    assert(len(fallbacks) == 1)
+    assert(joker != fallback)
     picks = []
-    for string in postbody.stripped_strings:
-        if string == fallback:
-            continue
+    for string in stripped_strings:
         try:
-            picks.append(Pick(player=player, game=Game.objects.get(name__iexact=string), joker=string == joker))
+            picks.append(Pick(player=player, game=Game.objects.get(name__iexact=string),
+                              joker=string == joker,
+                              fallback=string == fallback))
         except:
             print('Could not create Pick {} picks {}'.format(player, string))
             raise
@@ -41,8 +48,11 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2208'
+        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&p=37084'
         soup = BeautifulSoup(requests.get(basepage).text, 'html5lib')
-        pages = len(soup.select('.pagination'))
-        for i in range(pages):
-            parsePage('{}&start={}'.format(basepage, 20 * i))
+        pages = len(soup.select('.pagination')[0].select('a'))
+        if pages:
+            for i in range(pages):
+                parsePage('{}&start={}'.format(basepage, 20 * i))
+        else:
+            parsePage(basepage)
