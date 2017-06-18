@@ -12,20 +12,22 @@
                 </thead>
                 <tr>
                     <th>Pick</th>
-                    <th>Score</th>
+                    <th style="text-align:right;">Score</th>
                 </tr>
 
                 <tbody>
                     {% for pick in picks %}
                     <tr>
+                        <td><a href="{% url 'game' pk=pick.game.pk %}">
                         {% if pick.joker %}
-                            <td><a href="{% url 'game' pk=pick.game.pk %}"><b>{{ pick.game.name }}</b></a></td>
+                            <b>{{ pick.game.name }}</b>
                         {% elif pick.fallback%}
-                            <td><a href="{% url 'game' pk=pick.game.pk %}"><i>{{ pick.game.name }}</i></a></td>
+                            <i>{{ pick.game.name }}</i>
                         {% else %}
-                            <td><a href="{% url 'game' pk=pick.game.pk %}">{{ pick.game.name }}</a></td>
+                            {{ pick.game.name }}
                         {% endif %}
-                        <td>{{ pick.score|intcomma }}</td>
+                        </a></td>
+                        <td style="text-align:right;">{{ pick.score|intcomma }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
