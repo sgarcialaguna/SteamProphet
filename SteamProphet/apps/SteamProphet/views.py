@@ -1,5 +1,7 @@
+from collections import OrderedDict
 from operator import attrgetter
 
+import itertools
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
@@ -33,7 +35,9 @@ class PlayerDetailView(DetailView):
         picks = player.pick_set.all()
         for pick in picks:
             pick.score = services.computePickScore(pick)
-        context['picks'] = picks
+        grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('game.week'))}
+        grouped_picks = OrderedDict(sorted(grouped_picks.items(), reverse=True))
+        context['groupedPicks'] = grouped_picks
         return context
 
 

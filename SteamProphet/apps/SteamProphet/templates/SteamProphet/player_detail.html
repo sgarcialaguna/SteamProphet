@@ -5,31 +5,32 @@
     <div class="container">
         <h2 class="mb-4">Player: {{ object.name }}</h2>
         <h2 class="mb-4">Score: {{ object.score|intcomma }}</h2>
-        <table class="table">
-            <thead>
-
-            </thead>
-            <tr>
-                <th>Pick</th>
-                <th>Score</th>
-            </tr>
-
-            <tbody>
-            {% for pick in picks %}
+        {% for week, picks in groupedPicks.items %}
+            <h4>Week {{ week }}</h4>
+            <table class="table">
+                <thead>
+                </thead>
                 <tr>
-                    {% if pick.joker %}
-                        <td><a href="{% url 'game' pk=pick.game.pk %}"><b>{{ pick.game.name }}</b></a></td>
-                    {% elif pick.fallback%}
-                        <td><a href="{% url 'game' pk=pick.game.pk %}"><i>{{ pick.game.name }}</i></a></td>
-                    {% else %}
-                        <td><a href="{% url 'game' pk=pick.game.pk %}">{{ pick.game.name }}</a></td>
-                    {% endif %}
-                    <td>{{ pick.score|intcomma }}</td>
+                    <th>Pick</th>
+                    <th>Score</th>
                 </tr>
-            {% endfor %}
-            </tbody>
 
-        </table>
+                <tbody>
+                    {% for pick in picks %}
+                    <tr>
+                        {% if pick.joker %}
+                            <td><a href="{% url 'game' pk=pick.game.pk %}"><b>{{ pick.game.name }}</b></a></td>
+                        {% elif pick.fallback%}
+                            <td><a href="{% url 'game' pk=pick.game.pk %}"><i>{{ pick.game.name }}</i></a></td>
+                        {% else %}
+                            <td><a href="{% url 'game' pk=pick.game.pk %}">{{ pick.game.name }}</a></td>
+                        {% endif %}
+                        <td>{{ pick.score|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
         <p>Player picks. Jokers are marked in <b>bold</b>. Fallback games are marked in <i>italic</i>.</p>
     </div>
 {% endblock %}
