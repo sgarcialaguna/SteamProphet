@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&p=37084'
+        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2243'
         soup = BeautifulSoup(requests.get(basepage).text, 'html5lib')
         pages = len(soup.select('.pagination')[0].select('a'))
         if pages:
