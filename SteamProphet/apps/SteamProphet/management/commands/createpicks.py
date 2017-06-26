@@ -12,7 +12,11 @@ def parsePage(page):
     soup = BeautifulSoup(source, "html.parser")
     picks = []
     for post in soup.select('.post'):
-        picks.extend(parsePost(post))
+        try:
+            picks.extend(parsePost(post))
+        except:
+            playername = post.select('[class^="username"]')[0].text
+            print('Could not parse {}\'s post'.format(playername))
     Pick.objects.bulk_create(picks)
 
 
@@ -48,7 +52,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2243'
+        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2270'
         soup = BeautifulSoup(requests.get(basepage).text, 'html5lib')
         pages = len(soup.select('.pagination')[0].select('a'))
         if pages:
