@@ -1,70 +1,137 @@
 {% extends 'SteamProphet/base.html' %}
 {% load humanize %}
 
+{% block AdditionalScripts %}
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script id="history" type="application/json">
+    {{ game.history|safe }}
+</script>
+<script>
+    const data = JSON.parse(document.getElementById('history').innerText)
+    const chart = window.Highcharts.StockChart('chartContainer', {
+        chart: {
+            spacing: [0, 5, 0, 5]
+        },
+        navigator: {
+            enabled: false
+        },
+        rangeSelector: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        scrollbar: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            line: {
+                dataGrouping: {
+                    approximation: "high"
+                }
+            }
+        },
+        yAxis: {
+            allowDecimals: false,
+            min: 0
+        },
+        xAxis: {
+            type: "datetime"
+        },
+        series: [{
+            color: "#F44336",
+            type: "line",
+            name: "Score",
+            pointStart: new Date(data[0].scrape_date).getTime(),
+            pointInterval: 1000 * 60 * 60 * 24,
+            data: data.map(function(item){
+                var unroundedScore = Math.max(0, item.players - item.players_variance) * (item.price / 100)
+                return Math.floor(unroundedScore/1000)*1000
+            })
+        }]
+    })
+</script>
+{% endblock %}
+
 {% block content %}
     <div class="container">
-        <h1 class="mb-4">Game: {{ object.name }}{% if game.matured %}*{% endif %}</h1>
+        <div class="row">
+            <div class="col">
+                <h1 class="mb-4">Game: {{ object.name }}{% if game.matured %}*{% endif %}</h1>
 
-        <img src="http://cdn.akamai.steamstatic.com/steam/apps/{{ game.appID }}/header.jpg" class="img-fluid">
+                <img src="http://cdn.akamai.steamstatic.com/steam/apps/{{ game.appID }}/header.jpg" class="img-fluid">
 
-        <div class="row mb-2 justify-content-start">
-            <div class="col-lg-1 col-md-2"><a href="{{ game.steamspyURL }}">SteamSpy</a></div>
-            <div class="col-lg-1 col-md-2"><a href="{{ game.steamURL }}">Steam</a></div>
-        </div>
+                <div>
+                    <a class="mr-2" href="{{ game.steamspyURL }}">SteamSpy</a>
+                    <a href="{{ game.steamURL }}">Steam</a>
+                </div>
 
-        <div>
-            <b>Release date</b>
-        </div>
-        <div class="mb-2">
-            {{ game.releaseDate }}
-        </div>
+                <div>
+                    <b>Release date</b>
+                </div>
+                <div class="mb-2">
+                    {{ game.releaseDate }}
+                </div>
 
-        <div>
-            <b>Lowest price</b>
-        </div>
-        <div class="mb-2">
-            $ {{ game.price }}
-        </div>
+                <div>
+                    <b>Lowest price</b>
+                </div>
+                <div class="mb-2">
+                    $ {{ game.price }}
+                </div>
 
-        <div>
-            <b>Players</b>
-        </div>
-        <div class="mb-2">
-            {{ game.players|intcomma }}
-        </div>
+                <div>
+                    <b>Players</b>
+                </div>
+                <div class="mb-2">
+                    {{ game.players|intcomma }}
+                </div>
 
-        <div>
-            <b>Players Variance</b>
-        </div>
-        <div class="mb-2">
-            {{ game.playersVariance|intcomma }}
-        </div>
+                <div>
+                    <b>Players Variance</b>
+                </div>
+                <div class="mb-2">
+                    {{ game.playersVariance|intcomma }}
+                </div>
 
-        <div>
-            <b>Score</b>
-        </div>
-        <div>
-            {{ game.price }} * max(0, {{ game.players|intcomma }} - {{ game.playersVariance|intcomma }})
-        </div>
-        <div>
-            = {{ game.price }} * {{ game.playersLowerBound|intcomma }}
-        </div>
-        <div>
-            = {{ game.unroundedScore|intcomma }}
-        </div>
-        <div>
-           Rounded down to the nearest thousand:
-        </div>
-        <div>
-            = <b>{{ game.score|intcomma }}</b>
-        </div>
+                <div>
+                    <b>Score</b>
+                </div>
+                <div>
+                    {{ game.price }} * max(0, {{ game.players|intcomma }} - {{ game.playersVariance|intcomma }})
+                </div>
+                <div>
+                    = {{ game.price }} * {{ game.playersLowerBound|intcomma }}
+                </div>
+                <div>
+                    = {{ game.unroundedScore|intcomma }}
+                </div>
+                <div>
+                    Rounded down to the nearest thousand:
+                </div>
+                <div>
+                    = <b>{{ game.score|intcomma }}</b>
+                </div>
 
-        <div class="mb-2"></div>
-        <p>This game has matured and will earn no more points.</p>
+                <div class="mb-2"></div>
+                <p>This game has matured and will earn no more points.</p>
 
-        {% if user.is_staff %}
-            <div class="mb-"></div>
-            <a href="{% url 'delete_game' game.pk %}"><button type="button" class="btn btn-danger">Delete game</button></a>
-        {% endif %}
+                {% if user.is_staff %}
+                    <div class="mb-"></div>
+                    <a href="{% url 'delete_game' game.pk %}">
+                        <button type="button" class="btn btn-danger">Delete game</button>
+                    </a>
+                {% endif %}
+            </div>
+            <div class="col">
+                <div id="chartContainer"></div>
+            </div>
+        </div>
     </div>
 {% endblock %}
