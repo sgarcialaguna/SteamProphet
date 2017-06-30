@@ -26,6 +26,7 @@
                         {% else %}
                             {{ pick.game.name }}
                         {% endif %}
+                        {% if pick.game.matured %}*{% endif %}
                         </a></td>
                         <td style="text-align:right;">{{ pick.score|intcomma }}</td>
                     </tr>
@@ -33,6 +34,8 @@
                 </tbody>
             </table>
         {% endfor %}
-        <p>Player picks. Jokers are marked in <b>bold</b>. Fallback games are marked in <i>italic</i>.</p>
+        Jokers are marked in <b>bold</b>. <br>
+        Fallback games are marked in <i>italic</i>. <br>
+        Picks marked with an asterisk have matured and will earn no more points.
     </div>
 {% endblock %}

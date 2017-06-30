@@ -16,6 +16,7 @@ class Game(models.Model):
     playersVariance = models.PositiveIntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=6, default=0)
     week = models.PositiveIntegerField()
+    matured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name or str(self.appID)

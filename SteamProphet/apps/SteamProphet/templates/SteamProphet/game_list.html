@@ -19,7 +19,12 @@
                 {% for game in game_list %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a></td>
+                        <td>
+                            <a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a>
+                            {% if game.matured %}
+                            *
+                            {% endif %}
+                        </td>
                         <td>{{ game.week }}</td>
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td>{{ game.playersLowerBound }}</td>
@@ -29,5 +34,10 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <p>
+            Games marked with an asterisk have matured and will earn no more points.
+        </p>
+
     </div>
 {% endblock %}

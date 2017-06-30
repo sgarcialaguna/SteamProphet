@@ -1,4 +1,5 @@
 from dateutil.parser import *
+from django.utils.timezone import now
 import requests
 import time
 from django.core.management.base import BaseCommand
@@ -12,7 +13,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        for game in Game.objects.all():
+        for game in Game.objects.filter(matured=False):
             gameJSON = requests.get('https://steamspy.com/api.php?request=appdetails&appid={}'.
                                     format(game.appID)).json()
             game.players = gameJSON['players_forever']
@@ -24,6 +25,7 @@ class Command(BaseCommand):
             newPrice = gameData.get('price_overview', {}).get('final', 0)
             self.setPrice(game, newPrice)
             self.setReleaseDate(game, releaseDateString)
+            self.setMaturedFlag(game)
             game.save()
             # Rate limiter
             time.sleep(0.5)
@@ -46,3 +48,10 @@ class Command(BaseCommand):
         except ValueError:
             print('{} has invalid release date {}'.format(game.name, releaseDateString))
             game.releaseDate = None
+
+    def setMaturedFlag(self, game):
+        if not game.releaseDate:
+            return
+        today = now().date()
+        if (today - game.releaseDate).days >= 28:
+            game.matured = True
