@@ -9,12 +9,11 @@
             <h4>Week {{ week }}</h4>
             <table class="table">
                 <thead>
+                    <tr>
+                        <th>Pick</th>
+                        <th style="text-align:right;">Score</th>
+                    </tr>
                 </thead>
-                <tr>
-                    <th>Pick</th>
-                    <th style="text-align:right;">Score</th>
-                </tr>
-
                 <tbody>
                     {% for pick in picks %}
                     <tr>
