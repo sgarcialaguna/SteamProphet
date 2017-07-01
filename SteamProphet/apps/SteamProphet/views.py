@@ -1,7 +1,7 @@
+import itertools
 from collections import OrderedDict
 from operator import attrgetter
 
-import itertools
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
@@ -56,17 +56,14 @@ class PlayerListView(ListView):
 
 class GameListView(ListView):
     model = Game
-    queryset = Game.objects.order_by('releaseDate')
-    #paginate_by = 20
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        games = context['game_list']
-        for game in games:
-            game.playersLowerBound = max(0, game.players - game.playersVariance)
-            game.score = services.computeGameScore(game)
-        context['game_list'] = sorted(games, key=attrgetter('score'), reverse=True)
-        return context
+    # Perform the computation of score in SQL so the list comes out correctly sorted for pagination.
+    # Floor is not supported by Django so we need to use raw SQL
+    queryset = list(Game.objects.raw(
+        'SELECT *, FLOOR("SteamProphet_game1"."price" * "playersLowerBound" / 1000) * 1000 AS "score"'
+        ' FROM (SELECT *, GREATEST(0, "players" - "playersVariance") AS "playersLowerBound"'
+        ' FROM "SteamProphet_game") AS "SteamProphet_game1" ORDER BY "score" DESC, "releaseDate" ASC;'))
+    paginate_by = 20
+    template_name = 'SteamProphet/game_list.html'
 
 
 class DeleteGameView(DeleteView):
