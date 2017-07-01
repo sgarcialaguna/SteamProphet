@@ -50,9 +50,12 @@ def parsePost(post):
 class Command(BaseCommand):
     help = 'Creates random data'
 
+    def add_arguments(self, parser):
+        parser.add_argument('basepage', type=str)
+
     @transaction.atomic
     def handle(self, *args, **options):
-        basepage = 'https://forum.gamespodcast.de/viewtopic.php?f=9&t=2270'
+        basepage = options['basepage']
         soup = BeautifulSoup(requests.get(basepage).text, 'html5lib')
         pages = len(soup.select('.pagination')[0].select('a'))
         if pages:
