@@ -57,7 +57,7 @@ class PlayerListView(ListView):
 class GameListView(ListView):
     model = Game
     queryset = Game.objects.order_by('releaseDate')
-    paginate_by = 20
+    #paginate_by = 20
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
