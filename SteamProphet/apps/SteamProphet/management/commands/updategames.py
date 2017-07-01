@@ -28,7 +28,7 @@ class Command(BaseCommand):
             newPrice = gameData.get('price_overview', {}).get('final', 0)
             self.setPrice(game, newPrice)
             self.setReleaseDate(game, releaseDateString)
-            self.setMaturedFlag(game)
+            self.setMaturedFlag(game, gameData)
             self.saveHistory(game)
             game.save()
             # Rate limiter
@@ -53,8 +53,8 @@ class Command(BaseCommand):
             print('{} has invalid release date {}'.format(game.name, releaseDateString))
             game.releaseDate = None
 
-    def setMaturedFlag(self, game):
-        if not game.releaseDate:
+    def setMaturedFlag(self, game, gameData):
+        if not game.releaseDate or gameData['release_date']['coming_soon']:
             return
         today = now().date()
         if (today - game.releaseDate).days >= 28:
