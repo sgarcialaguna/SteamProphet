@@ -10,9 +10,9 @@
                     <th>Name</th>
                     <th>Week</th>
                     <th>Release Date</th>
-                    <th>Players (lower bound)</th>
-                    <th>Price</th>
-                    <th>Score</th>
+                    <th style="text-align: right">Players</th>
+                    <th style="text-align: right">Price</th>
+                    <th style="text-align: right">Score</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,9 +27,9 @@
                         </td>
                         <td>{{ game.week }}</td>
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
-                        <td>{{ game.playersLowerBound }}</td>
-                        <td>$&nbsp;{{ game.price }}</td>
-                        <td>{{ game.score|intcomma }}</td>
+                        <td style="text-align: right">{{ game.playersLowerBound|intcomma }}</td>
+                        <td style="text-align: right">{{ game.price }}&nbsp;$</td>
+                        <td style="text-align: right">{{ game.score|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
