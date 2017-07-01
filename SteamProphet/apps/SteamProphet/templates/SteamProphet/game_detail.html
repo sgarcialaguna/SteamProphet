@@ -48,10 +48,10 @@
             color: "#F44336",
             type: "line",
             name: "Score",
-            pointStart: new Date(data[0].scrape_date).getTime(),
+            pointStart: data[0].timestamp * 1000,
             pointInterval: 1000 * 60 * 60 * 24,
             data: data.map(function(item){
-                var unroundedScore = Math.max(0, item.players - item.players_variance) * (item.price / 100)
+                var unroundedScore = Math.max(0, item.players - item.playersVariance) * item.price
                 return Math.floor(unroundedScore/1000)*1000
             })
         }]

@@ -1,9 +1,12 @@
-from dateutil.parser import *
-from django.utils.timezone import now
-import requests
+import calendar
+import json
 import time
+
+import requests
+from dateutil.parser import *
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils.timezone import now
 
 from SteamProphet.apps.SteamProphet.models import Game
 
@@ -26,6 +29,7 @@ class Command(BaseCommand):
             self.setPrice(game, newPrice)
             self.setReleaseDate(game, releaseDateString)
             self.setMaturedFlag(game)
+            self.saveHistory(game)
             game.save()
             # Rate limiter
             time.sleep(0.5)
@@ -55,3 +59,16 @@ class Command(BaseCommand):
         today = now().date()
         if (today - game.releaseDate).days >= 28:
             game.matured = True
+
+    def saveHistory(self, game):
+        if game.history:
+            history = json.loads(game.history)
+        else:
+            history = []
+        history.append({
+          'players': game.players,
+          'playersVariance': game.playersVariance,
+          'price': float(game.price),
+          'timestamp': calendar.timegm(now().date().timetuple())
+        })
+        game.history = json.dumps(history)
