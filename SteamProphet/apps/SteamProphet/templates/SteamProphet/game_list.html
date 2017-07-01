@@ -18,7 +18,8 @@
             <tbody>
                 {% for game in game_list %}
                     <tr>
-                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+{#                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>#}
+                        <td>{{ forloop.counter }}</td>
                         <td>
                             <a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a>
                             {% if game.matured %}
