@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        week = Game.objects.order_by('-week').first().week
+        week = Game.objects.order_by('-week').first().week + 1
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
         nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
         nextSunday = nextMonday + relativedelta.relativedelta(weekday=relativedelta.SU)
