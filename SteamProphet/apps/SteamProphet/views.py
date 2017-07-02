@@ -56,14 +56,16 @@ class PlayerListView(ListView):
 
 class GameListView(ListView):
     model = Game
-    # Perform the computation of score in SQL so the list comes out correctly sorted for pagination.
-    # Floor is not supported by Django so we need to use raw SQL
-    queryset = list(Game.objects.raw(
-        'SELECT *, FLOOR("SteamProphet_game1"."price" * "playersLowerBound" / 1000) * 1000 AS "score"'
-        ' FROM (SELECT *, GREATEST(0, "players" - "playersVariance") AS "playersLowerBound"'
-        ' FROM "SteamProphet_game") AS "SteamProphet_game1" ORDER BY "score" DESC, "releaseDate" ASC;'))
     paginate_by = 20
     template_name = 'SteamProphet/game_list.html'
+
+    def get_queryset(self):
+        # Perform the computation of score in SQL so the list comes out correctly sorted for pagination.
+        # Floor is not supported by Django so we need to use raw SQL
+        return list(Game.objects.raw(
+            'SELECT *, FLOOR("SteamProphet_game1"."price" * "playersLowerBound" / 1000) * 1000 AS "score"'
+            ' FROM (SELECT *, GREATEST(0, "players" - "playersVariance") AS "playersLowerBound"'
+            ' FROM "SteamProphet_game") AS "SteamProphet_game1" ORDER BY "score" DESC, "releaseDate" ASC;'))
 
 
 class DeleteGameView(DeleteView):
