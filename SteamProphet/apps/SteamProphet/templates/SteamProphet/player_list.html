@@ -16,7 +16,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'player' pk=player.pk %}">{{ player.name }}</a></td>
-                        <td style="text-align: right">{{ player.score|intcomma }}</td>
+                        <td style="text-align: right">{{ player.score|intcomma }} $</td>
                     </tr>
                 {% endfor %}
             </tbody>

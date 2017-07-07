@@ -29,7 +29,7 @@
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td style="text-align: right">{{ game.playersLowerBound|intcomma }}</td>
                         <td style="text-align: right">{{ game.price }}&nbsp;$</td>
-                        <td style="text-align: right">{{ game.score|intcomma }}</td>
+                        <td style="text-align: right">{{ game.score|intcomma }} $</td>
                     </tr>
                 {% endfor %}
             </tbody>
