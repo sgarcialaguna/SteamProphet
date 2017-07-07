@@ -24,6 +24,7 @@ class Command(BaseCommand):
             gameJSON = requests.get('http://store.steampowered.com/api/appdetails/?appids={}&l=english&cc=us'.
                                     format(game.appID)).json()
             gameData = gameJSON[str(game.appID)]['data']
+            game.name = gameData['name']
             releaseDateString = gameData['release_date']['date']
             newPrice = gameData.get('price_overview', {}).get('final', 0)
             self.setPrice(game, newPrice)
