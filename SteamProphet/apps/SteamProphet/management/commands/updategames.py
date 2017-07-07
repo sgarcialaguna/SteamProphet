@@ -65,10 +65,15 @@ class Command(BaseCommand):
             history = json.loads(game.history)
         else:
             history = []
+
+        timestamp = calendar.timegm(now().date().timetuple())
+        if history and history[-1]['timestamp'] == timestamp:
+            return
+
         history.append({
           'players': game.players,
           'playersVariance': game.playersVariance,
           'price': float(game.price),
-          'timestamp': calendar.timegm(now().date().timetuple())
+          'timestamp': timestamp
         })
         game.history = json.dumps(history)
