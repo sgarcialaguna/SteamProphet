@@ -56,7 +56,6 @@ class PlayerListView(ListView):
 
 class GameListView(ListView):
     model = Game
-    paginate_by = 20
     template_name = 'SteamProphet/game_list.html'
 
     def get_queryset(self):

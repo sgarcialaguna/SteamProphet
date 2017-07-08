@@ -1,8 +1,34 @@
 {% extends 'SteamProphet/base.html' %}
 {% load humanize %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css"/>
+{% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('table').DataTable({
+                "pageLength": 20,
+                "lengthMenu": [[10, 20, 50, 100, -1], [10, 20, 50, 100, "All"]],
+                "processing": true,
+                "language": {
+                    "thousands": ".",
+                    "decimal": ","
+                },
+                "initComplete": function() {
+                    $('.container').show()
+                }
+            })
+        })
+    </script>
+{% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" style="display: none;">
         <table class="table">
             <thead>
                 <tr>
@@ -18,7 +44,7 @@
             <tbody>
                 {% for game in object_list %}
                     <tr>
-                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                        <td>{{ forloop.counter }}</td>
                         <td>
                             <a href="{% url 'game' pk=game.pk %}">{{ game.name }}</a>
                             {% if game.matured %}
@@ -28,40 +54,12 @@
                         <td>{{ game.week }}</td>
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td style="text-align: right">{{ game.playersLowerBound|intcomma }}</td>
-                        <td style="text-align: right">{{ game.price }}&nbsp;$</td>
+                        <td style="text-align: right">{{ game.price }} $</td>
                         <td style="text-align: right">{{ game.score|intcomma }} $</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        {% if is_paginated %}
-            <nav>
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                                Previous
-                            </a>
-                        </li>
-                    {% endif %}
-
-                    {% for page in paginator.page_range %}
-                        <li class="page-item {% if page == page_obj.number %}active{% endif %}">
-                            <a class="page-link" href="?page={{ page }}">{{ page }}</a>
-                        </li>
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                                Next
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
 
         <p>
             Games marked with an asterisk have matured and will earn no more points.
