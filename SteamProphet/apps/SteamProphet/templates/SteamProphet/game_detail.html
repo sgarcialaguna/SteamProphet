@@ -1,7 +1,7 @@
 {% extends 'SteamProphet/base.html' %}
 {% load humanize %}
 
-{% block AdditionalScripts %}
+{% block extrascripts %}
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script id="history" type="application/json">
     {{ game.history|safe }}
