@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container">
-        <h2 class="mb-4">Player: {{ object.name }}</h2>
+        <h2 class="mb-4">{{ object.name }}</h2>
         <h2 class="mb-4">Score: {{ object.score|intcomma }}</h2>
         {% for week, picks in groupedPicks.items %}
             <h4>Week {{ week }}</h4>

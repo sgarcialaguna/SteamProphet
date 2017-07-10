@@ -63,7 +63,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="mb-4">Game: {{ object.name }}{% if game.matured %}*{% endif %}</h1>
+                <h1 class="mb-4">{{ object.name }}{% if game.matured %}*{% endif %}</h1>
 
                 <img src="http://cdn.akamai.steamstatic.com/steam/apps/{{ game.appID }}/header.jpg" class="img-fluid">
 
