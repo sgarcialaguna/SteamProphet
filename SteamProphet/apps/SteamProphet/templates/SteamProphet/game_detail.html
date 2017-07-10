@@ -8,7 +8,7 @@
 </script>
 <script>
     const data = JSON.parse(document.getElementById('history').innerText)
-    const chart = window.Highcharts.StockChart('chartContainer', {
+    window.Highcharts.StockChart('chartContainer', {
         chart: {
             spacing: [0, 5, 0, 5]
         },

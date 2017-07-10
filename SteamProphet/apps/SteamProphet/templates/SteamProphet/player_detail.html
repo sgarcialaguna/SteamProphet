@@ -1,10 +1,68 @@
 {% extends 'SteamProphet/base.html' %}
 {% load humanize %}
 
+{% block extrascripts %}
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script id="history" type="application/json">
+        {{ player.history|safe }}
+    </script>
+    <script>
+    const data = JSON.parse(document.getElementById('history').innerText)
+    window.Highcharts.StockChart('chartContainer', {
+        chart: {
+            spacing: [0, 5, 0, 5]
+        },
+        navigator: {
+            enabled: false
+        },
+        rangeSelector: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        scrollbar: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            line: {
+                dataGrouping: {
+                    approximation: "high"
+                }
+            }
+        },
+        yAxis: {
+            allowDecimals: false,
+            min: 0
+        },
+        xAxis: {
+            type: "datetime"
+        },
+        series: [{
+            color: "#F44336",
+            type: "line",
+            name: "Score",
+            pointStart: data[0].timestamp * 1000,
+            pointInterval: 1000 * 60 * 60 * 24,
+            data: data.map(function(item){
+                return item.score
+            })
+        }]
+    })
+    </script>
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <h2 class="mb-4">{{ object.name }}</h2>
         <h2 class="mb-4">Score: {{ object.score|intcomma }}</h2>
+        <div id="chartContainer"></div>
         {% for week, picks in groupedPicks.items %}
             <h4>Week {{ week }}</h4>
             <table class="table">
