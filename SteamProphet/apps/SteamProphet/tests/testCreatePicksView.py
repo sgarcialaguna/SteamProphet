@@ -40,8 +40,16 @@ class TestCreatePicksView(TestCase):
     def test_view_is_inaccessible_after_monday_1900_CEST(self):
         self.assertViewIsInaccessible(year=2017, month=7, day=17, hour=19)
 
-    def test_view_is_inaccessible_after_monday_1900_CET(self):
-        self.assertViewIsInaccessible(year=2017, month=11, day=13, hour=19)
+    def test_view_handles_dst_switch_correctly(self):
+        # DST ends on Sunday, Oct 29th
+        self.assertViewIsAccessible(year=2017, month=10, day=27, hour=19)
+        self.assertViewIsAccessible(year=2017, month=10, day=30, hour=18)
+        self.assertViewIsInaccessible(year=2017, month=10, day=30, hour=19)
+
+        # DST starts again on Sunday, Mar 25th 2018
+        self.assertViewIsAccessible(year=2018, month=3, day=23, hour=19)
+        self.assertViewIsAccessible(year=2018, month=3, day=26, hour=18)
+        self.assertViewIsInaccessible(year=2018, month=3, day=26, hour=19)
 
     def assertViewIsAccessible(self, **kwargs):
         tz = pytz.timezone('CET')
