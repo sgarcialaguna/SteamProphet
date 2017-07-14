@@ -1,14 +1,19 @@
-import itertools
 from collections import OrderedDict
+from datetime import datetime
+import itertools
 from operator import attrgetter
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, ListView, DeleteView
+from django.views import View
+from django.views.generic import DeleteView, DetailView, ListView
+import pytz
 
 from SteamProphet.apps.SteamProphet import services
-from SteamProphet.apps.SteamProphet.models import Game, Player, Pick
+from SteamProphet.apps.SteamProphet.models import Game, Pick, Player
 
 
 class GameDetailView(DetailView):
@@ -92,3 +97,23 @@ class DeleteGameView(DeleteView):
             lines.append(line)
         game.delete()
         return render(request, 'SteamProphet/game_deleted.html', {'game': game, 'lines': lines})
+
+
+class CreatePicksView(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        tz = pytz.timezone('CET')
+        berlin_now = datetime.now(tz)
+        if berlin_now.isoweekday() not in [5, 6, 7, 1]:  # Friday through Monday
+            return HttpResponse('NOPE')
+        if berlin_now.isoweekday() == 5 and berlin_now.hour < 19:  # Friday
+            return HttpResponse('NOPE')
+        if berlin_now.isoweekday() == 1 and berlin_now.hour >= 19:  # Monday
+            return HttpResponse('NOPE')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('YEAH')
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponse('YEAH')
