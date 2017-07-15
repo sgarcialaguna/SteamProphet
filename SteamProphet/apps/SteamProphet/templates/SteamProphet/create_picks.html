@@ -1,0 +1,36 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Pick your games</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                {{ form.joker.errors }}
+                <label for="{{ form.joker.id_for_label }}">Joker</label>
+                {{ form.joker }}
+            </div>
+
+            <div class="form-group">
+                {{ form.pick1.errors }}
+                <label for="{{ form.pick1.id_for_label }}">Pick 1</label>
+                {{ form.pick1 }}
+            </div>
+
+            <div class="form-group">
+                {{ form.pick2.errors }}
+                <label for="{{ form.pick2.id_for_label }}">Pick 2</label>
+                {{ form.pick2 }}
+            </div>
+
+            <div class="form-group">
+                {{ form.fallback.errors }}
+                <label for="{{ form.fallback.id_for_label }}">Fallback</label>
+                {{ form.fallback }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}

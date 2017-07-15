@@ -1,18 +1,18 @@
+import itertools
 from collections import OrderedDict
 from datetime import datetime
-import itertools
 from operator import attrgetter
 
+import pytz
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views import View
-from django.views.generic import DeleteView, DetailView, ListView
-import pytz
+from django.views.generic import DeleteView, DetailView, ListView, FormView
 
-from SteamProphet.apps.SteamProphet import services
+from SteamProphet.apps.SteamProphet import services, forms
 from SteamProphet.apps.SteamProphet.models import Game, Pick, Player
 
 
@@ -99,21 +99,19 @@ class DeleteGameView(DeleteView):
         return render(request, 'SteamProphet/game_deleted.html', {'game': game, 'lines': lines})
 
 
-class CreatePicksView(View):
+class CreatePicksView(FormView):
+    form_class = forms.CreatePicksForm
+    template_name = 'SteamProphet/create_picks.html'
+    success_url = reverse_lazy('player_list')
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         tz = pytz.timezone('CET')
         berlin_now = datetime.now(tz)
         if berlin_now.isoweekday() not in [5, 6, 7, 1]:  # Friday through Monday
-            return HttpResponse('NOPE')
+            return HttpResponse('You cannot enter your picks at this time.', status=400)
         if berlin_now.isoweekday() == 5 and berlin_now.hour < 19:  # Friday
-            return HttpResponse('NOPE')
+            return HttpResponse('You cannot enter your picks at this time.', status=400)
         if berlin_now.isoweekday() == 1 and berlin_now.hour >= 19:  # Monday
-            return HttpResponse('NOPE')
+            return HttpResponse('You cannot enter your picks at this time.', status=400)
         return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        return HttpResponse('YEAH')
-
-    def post(self, request, *args, **kwargs):
-        return HttpResponse('YEAH')
