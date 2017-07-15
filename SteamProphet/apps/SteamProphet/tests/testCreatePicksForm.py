@@ -1,5 +1,8 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.test import TestCase
+from freezegun import freeze_time
 
 from SteamProphet.apps.SteamProphet import services
 from SteamProphet.apps.SteamProphet.models import Player, Game
@@ -7,13 +10,15 @@ from SteamProphet.apps.SteamProphet.models import Player, Game
 from ..forms import CreatePicksForm
 
 
+@freeze_time('2017-07-15')
 class TestCreatePicksForm(TestCase):
     def setUp(self):
         super(TestCreatePicksForm, self).setUp()
         self.user = User.objects.create(username='user')
         self.player = Player.objects.create(name='user')
-        #self.userProfile = UserProfile.objects.create(user=self.user, player=self.player)
-        self.games = [Game.objects.create(appID=i, week=services.getCurrentWeek()) for i in range(1, 5)]
+        releaseDate = datetime.date.today()
+        self.games = [Game.objects.create(appID=i, week=services.getCurrentWeek(), releaseDate=releaseDate)
+                      for i in range(1, 5)]
         self.validFormData = {
             'joker': self.games[0].appID,
             'fallback': self.games[1].appID,
@@ -48,7 +53,7 @@ class TestCreatePicksForm(TestCase):
 
     def test_gamesMustBeFromTheCurrentWeek(self):
         formData = self.validFormData
-        Game.objects.create(appID=42, week=2)
+        Game.objects.create(appID=42, week=2, releaseDate=datetime.date.today() + datetime.timedelta(days=7))
         formData['joker'] = 42
         form = CreatePicksForm(formData)
         self.assertFalse(form.is_valid())

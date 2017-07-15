@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -40,3 +41,8 @@ class Pick(models.Model):
         elif self.fallback:
             string += ' (Fallback)'
         return string
+
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    player = models.ForeignKey(Player)

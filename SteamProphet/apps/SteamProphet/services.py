@@ -1,3 +1,11 @@
+import datetime
+
+from dateutil import relativedelta
+import pytz
+
+from SteamProphet.apps.SteamProphet.models import Game
+
+
 def computeGameScore(game):
     if not game.price:
         return 0
@@ -25,4 +33,17 @@ def computePickScore(pick):
 
 
 def getCurrentWeek():
-    return 1
+    if not Game.objects.exists():
+        return 1
+    tz = pytz.timezone('CET')
+    berlin_now = datetime.datetime.now(tz)
+    firstGame = Game.objects.order_by('releaseDate').exclude(releaseDate__isnull=True).first()
+    fridayPrecedingFirstWeek = getPrecedingFriday(firstGame.releaseDate)
+    referenceDateTime = datetime.datetime(year=fridayPrecedingFirstWeek.year, month=fridayPrecedingFirstWeek.month,
+                                          day=fridayPrecedingFirstWeek.day, hour=19)
+    referenceDateTime = tz.localize(referenceDateTime)
+    return firstGame.week + int((berlin_now - referenceDateTime).days / 7)
+
+
+def getPrecedingFriday(aDate):
+    return aDate - datetime.timedelta(days=7) + relativedelta.relativedelta(weekday=relativedelta.FR)
