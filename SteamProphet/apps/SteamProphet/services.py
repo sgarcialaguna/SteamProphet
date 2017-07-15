@@ -22,3 +22,7 @@ def computePickScore(pick):
     if pick.joker:
         gameScore *= 2
     return gameScore
+
+
+def getCurrentWeek():
+    return 1
