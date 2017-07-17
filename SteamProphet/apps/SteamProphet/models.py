@@ -46,3 +46,9 @@ class Pick(models.Model):
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
     player = models.ForeignKey(Player)
+
+
+class VotingPeriod(models.Model):
+    week = models.PositiveSmallIntegerField(primary_key=True)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
