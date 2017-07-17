@@ -35,6 +35,14 @@
       </li>
     </ul>
   </div>
+
+  {% if user.is_authenticated %}
+    {{ user.username }}
+  {% else %}
+    <a href="{% url "social:begin" "steam" %}">
+        <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png">
+    </a>
+  {% endif %}
 </nav>
 
 {% block content %}

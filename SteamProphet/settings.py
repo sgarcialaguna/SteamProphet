@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import dj_database_url
 
+import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.urls import reverse_lazy
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'bulk_admin',
+    'social_django',
     'SteamProphet.apps.SteamProphet'
 ]
 
@@ -67,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -115,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'de-de'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = False
 
@@ -130,3 +135,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.steam.SteamOpenId',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+SOCIAL_AUTH_STEAM_API_KEY = os.getenv('SOCIAL_AUTH_STEAM_API_KEY')
+
+LOGIN_REDIRECT_URL = reverse_lazy('player_list')
