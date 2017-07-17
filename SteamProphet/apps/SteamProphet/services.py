@@ -1,9 +1,6 @@
-import datetime
+import django
 
-from dateutil import relativedelta
-import pytz
-
-from SteamProphet.apps.SteamProphet.models import Game
+from SteamProphet.apps.SteamProphet.models import VotingPeriod
 
 
 def computeGameScore(game):
@@ -31,19 +28,8 @@ def computePickScore(pick):
         gameScore *= 2
     return gameScore
 
-
-def getCurrentWeek():
-    if not Game.objects.exists():
-        return 1
-    tz = pytz.timezone('CET')
-    berlin_now = datetime.datetime.now(tz)
-    firstGame = Game.objects.order_by('releaseDate').exclude(releaseDate__isnull=True).first()
-    fridayPrecedingFirstWeek = getPrecedingFriday(firstGame.releaseDate)
-    referenceDateTime = datetime.datetime(year=fridayPrecedingFirstWeek.year, month=fridayPrecedingFirstWeek.month,
-                                          day=fridayPrecedingFirstWeek.day, hour=19)
-    referenceDateTime = tz.localize(referenceDateTime)
-    return firstGame.week + int((berlin_now - referenceDateTime).days / 7)
-
-
-def getPrecedingFriday(aDate):
-    return aDate - datetime.timedelta(days=7) + relativedelta.relativedelta(weekday=relativedelta.FR)
+def getCurrentVotingPeriod():
+    now = django.utils.timezone.now()
+    for votingPeriod in VotingPeriod.objects.all():
+        if votingPeriod.start < now < votingPeriod.end:
+            return votingPeriod.week

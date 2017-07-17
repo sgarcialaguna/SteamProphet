@@ -1,11 +1,9 @@
 import itertools
 from collections import OrderedDict
-from datetime import datetime
 from operator import attrgetter
 
-import pytz
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -104,14 +102,16 @@ class CreatePicksView(FormView):
     template_name = 'SteamProphet/create_picks.html'
     success_url = reverse_lazy('player_list')
 
-    @method_decorator(login_required)
+    def get_form_kwargs(self):
+        kwargs = super(CreatePicksView, self).get_form_kwargs()
+        kwargs.update({
+            'votingPeriod': services.getCurrentVotingPeriod()
+        })
+        return kwargs
+
     def dispatch(self, request, *args, **kwargs):
-        tz = pytz.timezone('CET')
-        berlin_now = datetime.now(tz)
-        if berlin_now.isoweekday() not in [5, 6, 7, 1]:  # Friday through Monday
-            return HttpResponse('You cannot enter your picks at this time.', status=400)
-        if berlin_now.isoweekday() == 5 and berlin_now.hour < 19:  # Friday
-            return HttpResponse('You cannot enter your picks at this time.', status=400)
-        if berlin_now.isoweekday() == 1 and berlin_now.hour >= 19:  # Monday
+        if not request.user.is_authenticated():
+            raise PermissionDenied('You must be logged in to access this view.')
+        if services.getCurrentVotingPeriod() is None:
             return HttpResponse('You cannot enter your picks at this time.', status=400)
         return super().dispatch(request, *args, **kwargs)
