@@ -98,6 +98,8 @@ class DeleteGameView(DeleteView):
 
 
 class CreatePicksView(FormView):
+    # TODO: Show picks already made
+    # TODO: Handle lapsed releases from a previous voting period
     form_class = forms.CreatePicksForm
     template_name = 'SteamProphet/create_picks.html'
     success_url = reverse_lazy('player_list')
@@ -105,13 +107,23 @@ class CreatePicksView(FormView):
     def get_form_kwargs(self):
         kwargs = super(CreatePicksView, self).get_form_kwargs()
         kwargs.update({
-            'votingPeriod': services.getCurrentVotingPeriod()
+            'votingPeriod': self.currentVotingPeriod
         })
         return kwargs
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated():
             raise PermissionDenied('You must be logged in to access this view.')
-        if services.getCurrentVotingPeriod() is None:
+        self.currentVotingPeriod = services.getCurrentVotingPeriod()
+        if self.currentVotingPeriod is None:
             return HttpResponse('You cannot enter your picks at this time.', status=400)
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        player = Player.objects.get_or_create(user=self.request.user, defaults={'name': self.request.user.username})[0]
+        Pick.objects.filter(game__week=self.currentVotingPeriod, player=player).delete()
+        Pick.objects.create(player=player, joker=True, game=form.cleaned_data['joker'])
+        Pick.objects.create(player=player, game=form.cleaned_data['pick1'])
+        Pick.objects.create(player=player, game=form.cleaned_data['pick2'])
+        Pick.objects.create(player=player, game=form.cleaned_data['pick3'])
+        return super(CreatePicksView, self).form_valid(form)
