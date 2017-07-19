@@ -43,11 +43,6 @@ class Pick(models.Model):
         return string
 
 
-class UserProfile(models.Model):
-    user = models.ForeignKey(User)
-    player = models.ForeignKey(Player)
-
-
 class VotingPeriod(models.Model):
     week = models.PositiveSmallIntegerField(primary_key=True)
     start = models.DateTimeField()
