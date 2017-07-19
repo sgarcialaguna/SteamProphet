@@ -3,6 +3,7 @@ from collections import OrderedDict
 from operator import attrgetter
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -127,3 +128,26 @@ class CreatePicksView(FormView):
         Pick.objects.create(player=player, game=form.cleaned_data['pick2'])
         Pick.objects.create(player=player, game=form.cleaned_data['pick3'])
         return super(CreatePicksView, self).form_valid(form)
+
+
+class PlayerProfileView(FormView):
+    form_class = forms.PlayerProfileForm
+    template_name = 'SteamProphet/player_profile.html'
+    success_url = reverse_lazy('player_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'player': self.request.user.player
+        })
+        return kwargs
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        player = self.request.user.player
+        player.name = form.cleaned_data['name']
+        player.save()
+        return super().form_valid(form)

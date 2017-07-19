@@ -1,0 +1,21 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Enter your nickname</label>
+                {{ form.name.errors }}
+                {{ form.name }}
+            </div>
+
+            <p>
+                This name will be shown to other users. By default, your nickname is a random string.
+            </p>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 import django
 
-from SteamProphet.apps.SteamProphet.models import VotingPeriod
+from SteamProphet.apps.SteamProphet.models import VotingPeriod, Player
 
 
 def computeGameScore(game):
@@ -33,3 +33,12 @@ def getCurrentVotingPeriod():
     for votingPeriod in VotingPeriod.objects.all():
         if votingPeriod.start < now < votingPeriod.end:
             return votingPeriod.week
+
+
+def createPlayer(strategy, details, user=None, *args, **kwargs):
+    if user is None:
+        return {}
+    is_new = kwargs.get('is_new')
+    if is_new:
+        Player.objects.create(name=user.username, user=user)
+    return {}
