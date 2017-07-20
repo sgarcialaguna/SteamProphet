@@ -36,7 +36,7 @@ class PlayerDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         player = context['object']
         player.score = services.computePlayerScore(player)
-        picks = player.pick_set.all()
+        picks = player.pick_set.order_by('-game__week').all()
         for pick in picks:
             pick.score = services.computePickScore(pick)
         grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('game.week'))}
