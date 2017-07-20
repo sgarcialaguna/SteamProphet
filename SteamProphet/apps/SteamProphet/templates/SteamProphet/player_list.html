@@ -1,13 +1,41 @@
 {% extends 'SteamProphet/base.html' %}
 {% load humanize %}
 
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css"/>
+{% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.15/sorting/datetime-moment.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('table').DataTable({
+                "paging": false,
+                "processing": true,
+                "language": {
+                    "thousands": ".",
+                    "decimal": ","
+                },
+                "initComplete": function() {
+                    $('.container').show()
+                }
+            })
+        })
+    </script>
+{% endblock %}
+
 {% block content %}
-    <div class="container">
+    <div class="container" style="display: none">
         <table class="table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th style="text-align: right">Score from matured games</th>
+                    <th style="text-align: right">Score from in-flight games</th>
                     <th style="text-align: right">Score</th>
                 </tr>
             </thead>
@@ -16,6 +44,8 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'player' pk=player.pk %}">{{ player.name }}</a></td>
+                        <td style="text-align: right">{{ player.scoreFromMaturedGames|intcomma }} $</td>
+                        <td style="text-align: right">{{ player.scoreFromInFlightGames|intcomma }} $</td>
                         <td style="text-align: right">{{ player.score|intcomma }} $</td>
                     </tr>
                 {% endfor %}

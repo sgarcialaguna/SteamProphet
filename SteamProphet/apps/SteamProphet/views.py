@@ -54,6 +54,8 @@ class PlayerListView(ListView):
         players = context['player_list']
         for player in players:
             player.score = services.computePlayerScore(player)
+            player.scoreFromMaturedGames = services.computePlayerScore(player, onlyMaturedGames=True)
+            player.scoreFromInFlightGames = player.score - player.scoreFromMaturedGames
         context['player_list'] = sorted(players, key=attrgetter('score'), reverse=True)
         return context
 

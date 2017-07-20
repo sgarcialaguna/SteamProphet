@@ -12,9 +12,12 @@ def computeGameScore(game):
     return int(score)
 
 
-def computePlayerScore(player):
+def computePlayerScore(player, onlyMaturedGames=False):
     score = 0
-    for pick in player.pick_set.all():
+    picks = player.pick_set
+    if onlyMaturedGames:
+        picks = picks.filter(game__matured=True)
+    for pick in picks.all():
         gameScore = computePickScore(pick)
         score += gameScore
     return score
