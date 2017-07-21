@@ -17,7 +17,10 @@ class Command(BaseCommand):
         nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
         nextSunday = nextMonday + relativedelta.relativedelta(weekday=relativedelta.SU)
         for gameJSON in upcomingGamesJSON:
-            releasedate = parser.parse(gameJSON['release_date']).date()
+            try:
+                releasedate = parser.parse(gameJSON['release_date']).date()
+            except ValueError:
+                continue
             if releasedate < nextMonday or releasedate > nextSunday:
                 continue
             if not Game.objects.filter(appID=gameJSON['steam_id']).exists():
