@@ -1,0 +1,22 @@
+{% extends 'SteamProphet/base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% if user.is_authenticated %}
+            <h1>You are already logged in</h1>
+        {% else %}
+            <p>
+            <a href="{% url "social:begin" "steam" %}">
+                <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png">
+            </a>
+            </p>
+
+            <h3>About The Pod Fantasy Steam authentication</h3>
+
+            <p>
+            To protect your privacy, the only identifying information The Pod Fantasy Steam stores is a unique user ID tag.
+            See our <a href="{% url 'privacy' %}">privacy policy</a> for details.
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

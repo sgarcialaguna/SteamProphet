@@ -1,5 +1,5 @@
-import itertools
 from collections import OrderedDict
+import itertools
 from operator import attrgetter
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -9,9 +9,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import DeleteView, DetailView, ListView, FormView
+from django.views.generic import DeleteView, DetailView, FormView, ListView, TemplateView
 
-from SteamProphet.apps.SteamProphet import services, forms
+from SteamProphet.apps.SteamProphet import forms, services
 from SteamProphet.apps.SteamProphet.models import Game, Pick, Player
 
 
@@ -153,3 +153,11 @@ class PlayerProfileView(FormView):
         player.name = form.cleaned_data['name']
         player.save()
         return super().form_valid(form)
+
+
+class LoginView(TemplateView):
+    template_name = 'SteamProphet/login.html'
+
+
+class PrivacyView(TemplateView):
+    template_name = 'SteamProphet/privacy.html'
