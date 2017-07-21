@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 # Rate limiter
                 time.sleep(0.5)
             except:
-                print('Could not update game ' + game.appID)
+                print('Could not update game {}'.format(game.name))
 
     def setPrice(self, game, newPrice):
         try:
