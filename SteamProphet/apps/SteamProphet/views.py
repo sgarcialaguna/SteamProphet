@@ -1,13 +1,10 @@
-from collections import OrderedDict
 import itertools
+from collections import OrderedDict
 from operator import attrgetter
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import DeleteView, DetailView, FormView, ListView, TemplateView
 
@@ -114,8 +111,10 @@ class CreatePicksView(FormView):
         })
         return kwargs
 
-    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return redirect('login')
+
         self.currentVotingPeriod = services.getCurrentVotingPeriod()
         if self.currentVotingPeriod is None:
             return render(self.request, self.template_name,
@@ -145,8 +144,9 @@ class PlayerProfileView(FormView):
         })
         return kwargs
 
-    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return redirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
