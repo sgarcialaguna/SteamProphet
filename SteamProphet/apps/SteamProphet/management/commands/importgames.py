@@ -12,7 +12,8 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        weekNumber = Game.objects.order_by('-week__week').first().week.week + 1
+        latestWeek = Week.objects.order_by('-week').first()
+        weekNumber = latestWeek.week + 1 if latestWeek else 1
         weekObject = Week.objects.get_or_create(week=weekNumber)[0]
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
         nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
@@ -25,8 +26,8 @@ class Command(BaseCommand):
             if releasedate < nextMonday or releasedate > nextSunday:
                 continue
             if not Game.objects.filter(appID=gameJSON['steam_id']).exists():
-                Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'], week=weekObject)
+                game = Game.objects.create(appID=gameJSON['steam_id'], name=gameJSON['name'])
+                game.week.add(weekObject)
             else:
                 game = Game.objects.get(appID=gameJSON['steam_id'])
                 game.week.add(weekObject)
-                game.save()
