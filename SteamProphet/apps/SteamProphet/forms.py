@@ -1,23 +1,39 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from SteamProphet.apps.SteamProphet.models import Game, Player
+from SteamProphet.apps.SteamProphet.models import Game, Player, Pick
 
 
 class CreatePicksForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
-        self.votingPeriod = kwargs.pop('votingPeriod', None)
-        eligibleGames = Game.objects.filter(week=self.votingPeriod)
+        self.votingPeriod = kwargs.pop('votingPeriod')
+        self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+
+        picks = Pick.objects.filter(player__user=self.user, game__week=self.votingPeriod)
+        jokerPick = picks.filter(joker=True).first()
+        joker = jokerPick.game if jokerPick else None
+
+        regularPicks = picks.exclude(joker=True)
+        pick1 = regularPicks[0].game if len(regularPicks) > 0 else None
+        pick2 = regularPicks[1].game if len(regularPicks) > 1 else None
+        pick3 = regularPicks[2].game if len(regularPicks) > 2 else None
+
+        eligibleGames = Game.objects.filter(week=self.votingPeriod)
+
         self.fields['joker'] = forms.ModelChoiceField(queryset=eligibleGames,
-                                                      widget=forms.Select(attrs={'class': 'form-control'}))
+                                                      widget=forms.Select(attrs={'class': 'form-control'}),
+                                                      initial=joker)
         self.fields['pick1'] = forms.ModelChoiceField(queryset=eligibleGames,
-                                                      widget=forms.Select(attrs={'class': 'form-control'}))
+                                                      widget=forms.Select(attrs={'class': 'form-control'}),
+                                                      initial=pick1)
         self.fields['pick2'] = forms.ModelChoiceField(queryset=eligibleGames,
-                                                      widget=forms.Select(attrs={'class': 'form-control'}))
+                                                      widget=forms.Select(attrs={'class': 'form-control'}),
+                                                      initial=pick2)
         self.fields['pick3'] = forms.ModelChoiceField(queryset=eligibleGames,
-                                                      widget=forms.Select(attrs={'class': 'form-control'}))
+                                                      widget=forms.Select(attrs={'class': 'form-control'}),
+                                                      initial=pick3)
 
     def clean(self):
         if self.votingPeriod is None:

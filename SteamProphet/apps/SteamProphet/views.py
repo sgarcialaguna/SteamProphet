@@ -101,7 +101,6 @@ class DeleteGameView(DeleteView):
 
 
 class CreatePicksView(FormView):
-    # TODO: Show picks already made
     # TODO: Handle lapsed releases from a previous voting period
     form_class = forms.CreatePicksForm
     template_name = 'SteamProphet/create_picks.html'
@@ -110,16 +109,18 @@ class CreatePicksView(FormView):
     def get_form_kwargs(self):
         kwargs = super(CreatePicksView, self).get_form_kwargs()
         kwargs.update({
-            'votingPeriod': self.currentVotingPeriod
+            'votingPeriod': self.currentVotingPeriod,
+            'user': self.request.user
         })
         return kwargs
 
+    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
-            raise PermissionDenied('You must be logged in to access this view.')
         self.currentVotingPeriod = services.getCurrentVotingPeriod()
         if self.currentVotingPeriod is None:
-            return HttpResponse('You cannot enter your picks at this time.', status=400)
+            return render(self.request, self.template_name,
+                          context={'errorMessage': 'You cannot enter your picks at this time'},
+                          status=400)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
