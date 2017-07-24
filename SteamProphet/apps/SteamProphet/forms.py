@@ -11,7 +11,7 @@ class CreatePicksForm(forms.Form):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
 
-        picks = Pick.objects.filter(player__user=self.user, week=self.votingPeriod)
+        picks = Pick.objects.filter(player__user=self.user, week=self.votingPeriod.week)
         jokerPick = picks.filter(joker=True).first()
         joker = jokerPick.game if jokerPick else None
 
@@ -20,7 +20,7 @@ class CreatePicksForm(forms.Form):
         pick2 = regularPicks[1].game if len(regularPicks) > 1 else None
         pick3 = regularPicks[2].game if len(regularPicks) > 2 else None
 
-        eligibleGames = Game.objects.filter(week=self.votingPeriod)
+        eligibleGames = Game.objects.filter(week=self.votingPeriod.week)
 
         self.fields['joker'] = forms.ModelChoiceField(queryset=eligibleGames,
                                                       widget=forms.Select(attrs={'class': 'form-control'}),
