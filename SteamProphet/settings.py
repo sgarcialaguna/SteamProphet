@@ -193,3 +193,4 @@ SOCIAL_AUTH_STEAM_PIPELINE = (
 
 LOGIN_REDIRECT_URL = reverse_lazy('player_list')
 NEW_USER_REDIRECT_URL = reverse_lazy('player_profile')
+LOGIN_URL = reverse_lazy('login')
