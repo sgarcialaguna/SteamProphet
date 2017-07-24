@@ -48,3 +48,6 @@ class VotingPeriod(models.Model):
     week = models.PositiveSmallIntegerField(primary_key=True)
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    def __str__(self):
+        return 'Voting Period {} : {} - {}'.format(self.week, self.start, self.end)
