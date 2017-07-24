@@ -36,10 +36,10 @@ class PlayerDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         player = context['object']
         player.score = services.computePlayerScore(player)
-        picks = player.pick_set.order_by('-game__week').all()
+        picks = player.pick_set.order_by('-week').all()
         for pick in picks:
             pick.score = services.computePickScore(pick)
-        grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('game.week'))}
+        grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('week.week'))}
         grouped_picks = OrderedDict(sorted(grouped_picks.items(), reverse=True))
         context['groupedPicks'] = grouped_picks
         return context
@@ -88,7 +88,7 @@ class DeleteGameView(DeleteView):
                 lines.append('{} picked {} as their fallback game.'.format(pick.player.name, pick.game.name))
                 continue
             line = '{} picked {}.'.format(pick.player.name, pick.game.name)
-            matchingFallback = Pick.objects.filter(game__week=game.week, player=pick.player, fallback=True).first()
+            matchingFallback = Pick.objects.filter(week=pick.week, player=pick.player, fallback=True).first()
             if matchingFallback:
                 matchingFallback.fallback = False
                 matchingFallback.save()
@@ -125,11 +125,11 @@ class CreatePicksView(FormView):
 
     def form_valid(self, form):
         player = Player.objects.get_or_create(user=self.request.user, defaults={'name': self.request.user.username})[0]
-        Pick.objects.filter(game__week=self.currentVotingPeriod, player=player).delete()
-        Pick.objects.create(player=player, joker=True, game=form.cleaned_data['joker'])
-        Pick.objects.create(player=player, game=form.cleaned_data['pick1'])
-        Pick.objects.create(player=player, game=form.cleaned_data['pick2'])
-        Pick.objects.create(player=player, game=form.cleaned_data['pick3'])
+        Pick.objects.filter(week=self.currentVotingPeriod, player=player).delete()
+        Pick.objects.create(week=self.currentVotingPeriod, player=player, joker=True, game=form.cleaned_data['joker'])
+        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick1'])
+        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick2'])
+        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick3'])
         return super(CreatePicksView, self).form_valid(form)
 
 

@@ -37,7 +37,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Week</th>
+                    <th>Weeks</th>
                     <th>Release Date</th>
                     <th style="text-align: right">Players</th>
                     <th style="text-align: right">Price</th>
@@ -54,7 +54,7 @@
                             *
                             {% endif %}
                         </td>
-                        <td>{{ game.week }}</td>
+                        <td>{{ game.weeks|join:", " }}</td>
                         <td>{{ game.releaseDate|default:"N/A" }}</td>
                         <td style="text-align: right">{{ game.playersLowerBound|intcomma }}</td>
                         <td style="text-align: right">{{ game.price }} $</td>

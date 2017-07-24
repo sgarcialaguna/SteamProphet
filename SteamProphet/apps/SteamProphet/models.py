@@ -11,6 +11,13 @@ class Player(models.Model):
         return self.name
 
 
+class Week(models.Model):
+    week = models.PositiveSmallIntegerField(primary_key=True)
+
+    def __str__(self):
+        return 'Week {}'.format(self.week)
+
+
 class Game(models.Model):
     appID = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -18,12 +25,15 @@ class Game(models.Model):
     players = models.PositiveIntegerField(default=0)
     playersVariance = models.PositiveIntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=6, default=0)
-    week = models.PositiveIntegerField()
+    week = models.ManyToManyField(Week)
     matured = models.BooleanField(default=False)
     history = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name or str(self.appID)
+
+    def weeks(self):
+        return [week.week for week in self.week.all()]
 
 
 class Pick(models.Model):
@@ -31,6 +41,7 @@ class Pick(models.Model):
     game = models.ForeignKey(Game)
     joker = models.BooleanField(default=False)
     fallback = models.BooleanField(default=False)
+    week = models.ForeignKey(Week)
 
     class Meta:
         unique_together = ('player', 'game')
@@ -45,7 +56,7 @@ class Pick(models.Model):
 
 
 class VotingPeriod(models.Model):
-    week = models.PositiveSmallIntegerField(primary_key=True)
+    week = models.ForeignKey(Week)
     start = models.DateTimeField()
     end = models.DateTimeField()
 

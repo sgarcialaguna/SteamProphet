@@ -31,6 +31,7 @@ def computePickScore(pick):
         gameScore *= 2
     return gameScore
 
+
 def getCurrentVotingPeriod():
     now = django.utils.timezone.now()
     for votingPeriod in VotingPeriod.objects.all():

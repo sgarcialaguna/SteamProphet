@@ -11,7 +11,7 @@ class CreatePicksForm(forms.Form):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
 
-        picks = Pick.objects.filter(player__user=self.user, game__week=self.votingPeriod)
+        picks = Pick.objects.filter(player__user=self.user, week=self.votingPeriod)
         jokerPick = picks.filter(joker=True).first()
         joker = jokerPick.game if jokerPick else None
 
