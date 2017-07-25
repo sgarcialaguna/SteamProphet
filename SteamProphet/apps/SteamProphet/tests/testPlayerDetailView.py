@@ -22,14 +22,14 @@ class TestPlayerDetailView(TestCase):
     def test_anonymousUserCanSeePicks(self):
         request = self.factory.get('')
         request.user = AnonymousUser()
-        response = PlayerDetailView.as_view()(request, pk=self.player.pk)
-        self.assertContains(response, 'Noun of Nouns')
+        view = PlayerDetailView(request=request, pk=self.player.pk)
+        self.assertIn(self.pick, list(view.getPicks(self.player)))
 
     def test_viewShowsPicksOfOtherPlayer(self):
         request = self.factory.get('')
         request.user = self.user2
-        response = PlayerDetailView.as_view()(request, pk=self.player.pk)
-        self.assertContains(response, 'Noun of Nouns')
+        view = PlayerDetailView(request=request, pk=self.player.pk)
+        self.assertIn(self.pick, list(view.getPicks(self.player)))
 
     def test_viewDoesNotShowsPicksOfOtherPlayerForActiveVotingPeriod(self):
         now = django.utils.timezone.now()
@@ -38,8 +38,8 @@ class TestPlayerDetailView(TestCase):
                                     end=now + datetime.timedelta(days=2))
         request = self.factory.get('')
         request.user = self.user2
-        response = PlayerDetailView.as_view()(request, pk=self.player.pk)
-        self.assertNotContains(response, 'Noun of Nouns')
+        view = PlayerDetailView(request=request, pk=self.player.pk)
+        self.assertEqual([], list(view.getPicks(self.player)))
 
     def test_playersCanAlwaysSeeTheirOwnPicks(self):
         now = django.utils.timezone.now()
@@ -48,8 +48,8 @@ class TestPlayerDetailView(TestCase):
                                     end=now + datetime.timedelta(days=2))
         request = self.factory.get('')
         request.user = self.user
-        response = PlayerDetailView.as_view()(request, pk=self.player.pk)
-        self.assertContains(response, 'Noun of Nouns')
+        view = PlayerDetailView(request=request, pk=self.player.pk)
+        self.assertIn(self.pick, list(view.getPicks(self.player)))
 
     def test_staffUserCanSeeAllThePicks(self):
         now = django.utils.timezone.now()
@@ -58,5 +58,5 @@ class TestPlayerDetailView(TestCase):
                                     end=now + datetime.timedelta(days=2))
         request = self.factory.get('')
         request.user = User.objects.create_superuser('admin', 'admin@example.com', 'secret')
-        response = PlayerDetailView.as_view()(request, pk=self.player.pk)
-        self.assertContains(response, 'Noun of Nouns')
+        view = PlayerDetailView(request=request, pk=self.player.pk)
+        self.assertIn(self.pick, list(view.getPicks(self.player)))
