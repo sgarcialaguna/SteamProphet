@@ -1,7 +1,7 @@
 import bulk_admin
 from django.contrib import admin
 
-from .models import Game, Player, Pick, VotingPeriod
+from .models import Game, Player, Pick, VotingPeriod, Week
 
 
 @admin.register(Game)
@@ -15,3 +15,5 @@ class PickAdmin(bulk_admin.BulkModelAdmin):
 admin.site.register(Player)
 
 admin.site.register(VotingPeriod)
+
+admin.site.register(Week)
