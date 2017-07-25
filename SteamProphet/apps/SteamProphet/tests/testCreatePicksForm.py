@@ -96,8 +96,22 @@ class TestCreatePicksForm(TestCase):
                                                     start=self.votingPeriod.start + datetime.timedelta(days=14),
                                                     end=self.votingPeriod.end + datetime.timedelta(days=14))
         form = CreatePicksForm(formData, votingPeriod=votingPeriod2, user=self.user)
-        self.assertFalse(form.is_valid())
+        self.assertFalse(form.is_valid(), form.errors)
 
+    def test_ignorePreviousPicksFromOtherPlayers(self):
+        formData = self.validFormData
+        week2 = Week.objects.create(week=2)
+        for game in Game.objects.all():
+            game.week = [self.week, week2]
+            game.save()
+        user2 = User.objects.create(username='user2')
+        player2 = Player.objects.create(name='user2', user=user2)
+        Pick.objects.create(player=player2, game=Game.objects.first(), week=self.week)
+        votingPeriod2 = VotingPeriod.objects.create(week=week2,
+                                                    start=self.votingPeriod.start + datetime.timedelta(days=14),
+                                                    end=self.votingPeriod.end + datetime.timedelta(days=14))
+        form = CreatePicksForm(formData, votingPeriod=votingPeriod2, user=self.user)
+        self.assertTrue(form.is_valid(), form.errors)
 
     def test_validFormData(self):
         form = CreatePicksForm(self.validFormData, votingPeriod=self.votingPeriod, user=self.user)
