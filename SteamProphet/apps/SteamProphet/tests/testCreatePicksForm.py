@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from freezegun import freeze_time
 
-from SteamProphet.apps.SteamProphet.models import Player, Game, VotingPeriod, Week
+from SteamProphet.apps.SteamProphet.models import Player, Game, VotingPeriod, Week, Pick
 from ..forms import CreatePicksForm
 
 
@@ -84,6 +84,19 @@ class TestCreatePicksForm(TestCase):
                                                     end=self.votingPeriod.end + datetime.timedelta(days=14))
         form = CreatePicksForm(formData, votingPeriod=votingPeriod2, user=self.user)
         self.assertTrue(form.is_valid())
+
+    def test_disallowLapsedReleasesPickedInAPreviousWeek(self):
+        formData = self.validFormData
+        week2 = Week.objects.create(week=2)
+        for game in Game.objects.all():
+            game.week = [self.week, week2]
+            game.save()
+        Pick.objects.create(player=self.player, game=Game.objects.first(), week=self.week)
+        votingPeriod2 = VotingPeriod.objects.create(week=week2,
+                                                    start=self.votingPeriod.start + datetime.timedelta(days=14),
+                                                    end=self.votingPeriod.end + datetime.timedelta(days=14))
+        form = CreatePicksForm(formData, votingPeriod=votingPeriod2, user=self.user)
+        self.assertFalse(form.is_valid())
 
 
     def test_validFormData(self):

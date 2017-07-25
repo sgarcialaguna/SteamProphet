@@ -20,7 +20,8 @@ class CreatePicksForm(forms.Form):
         pick2 = regularPicks[1].game if len(regularPicks) > 1 else None
         pick3 = regularPicks[2].game if len(regularPicks) > 2 else None
 
-        eligibleGames = Game.objects.filter(week=self.votingPeriod.week)
+        eligibleGames = Game.objects.filter(week=self.votingPeriod.week).\
+            exclude(pick__player=self.user.player, pick__week__week__lt=self.votingPeriod.week.week)
 
         self.fields['joker'] = forms.ModelChoiceField(queryset=eligibleGames,
                                                       widget=forms.Select(attrs={'class': 'form-control'}),
