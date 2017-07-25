@@ -33,13 +33,23 @@ class PlayerDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         player = context['object']
         player.score = services.computePlayerScore(player)
-        picks = player.pick_set.order_by('-week').all()
+
+        picks = self.getPicks(player)
         for pick in picks:
             pick.score = services.computePickScore(pick)
         grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('week.week'))}
         grouped_picks = OrderedDict(sorted(grouped_picks.items(), reverse=True))
         context['groupedPicks'] = grouped_picks
         return context
+
+    def getPicks(self, player):
+        picks = player.pick_set
+        if self.request.user != player.user and not self.request.user.is_staff:
+            votingPeriod = services.getCurrentVotingPeriod()
+            if votingPeriod is not None:
+                picks = picks.exclude(week=votingPeriod.week)
+        picks = picks.order_by('-week').all()
+        return picks
 
 
 class PlayerListView(ListView):
@@ -98,7 +108,6 @@ class DeleteGameView(DeleteView):
 
 
 class CreatePicksView(FormView):
-    # TODO: Handle lapsed releases from a previous voting period
     form_class = forms.CreatePicksForm
     template_name = 'SteamProphet/create_picks.html'
     success_url = reverse_lazy('player_list')
