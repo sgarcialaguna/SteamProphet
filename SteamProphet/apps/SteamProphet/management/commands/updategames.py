@@ -8,8 +8,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.timezone import now
 
-from SteamProphet.apps.SteamProphet import services
-from SteamProphet.apps.SteamProphet.models import Game, Player
+from SteamProphet.apps.SteamProphet.models import Game
 
 
 class Command(BaseCommand):
@@ -38,10 +37,6 @@ class Command(BaseCommand):
                 time.sleep(0.5)
             except:
                 print('Could not update game ' + game.appID)
-
-        for player in Player.objects.all():
-            self.savePlayerHistory(player)
-            player.save()
 
     def setPrice(self, game, newPrice):
         try:
@@ -86,19 +81,3 @@ class Command(BaseCommand):
           'timestamp': timestamp
         })
         game.history = json.dumps(history)
-
-    def savePlayerHistory(self, player):
-        if player.history:
-            history = json.loads(player.history)
-        else:
-            history = []
-
-        timestamp = calendar.timegm(now().date().timetuple())
-        if history and history[-1]['timestamp'] == timestamp:
-            return
-
-        history.append({
-            'score': services.computePlayerScore(player),
-            'timestamp': timestamp
-        })
-        player.history = json.dumps(history)
