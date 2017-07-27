@@ -141,6 +141,10 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
 
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 SOCIAL_AUTH_STEAM_API_KEY = os.getenv('SOCIAL_AUTH_STEAM_API_KEY')
 
 SOCIAL_AUTH_STEAM_PIPELINE = (
