@@ -1,32 +1,33 @@
-html {
-    position: relative;
-    min-height: 100%;
+html, body {
+    height: 100%;
 }
 
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+.navbar, .footer {
+    flex-grow: 0;
+}
+
+main {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100% - 56px - 56px);
 }
 
 .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
     /* Set the fixed height of the footer here */
-    height: 60px;
+    height: 56px;
     background-color: #f8f8f8;
 }
 
-body > .container {
-    padding: 70px 15px 10px;
+main > .container {
+    padding: 15px 10px;
 }
 
-.footer > .container {
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-.footer p
-{
-    margin: 20px 0;
+.footer p {
+    margin: 16px 0;
 }
