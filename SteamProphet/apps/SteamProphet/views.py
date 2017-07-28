@@ -48,7 +48,7 @@ class PlayerDetailView(DetailView):
             votingPeriod = services.getCurrentVotingPeriod()
             if votingPeriod is not None:
                 picks = picks.exclude(week=votingPeriod.week)
-        picks = picks.order_by('-week').all()
+        picks = picks.order_by('-week', '-joker', 'id').all()
         return picks
 
 
