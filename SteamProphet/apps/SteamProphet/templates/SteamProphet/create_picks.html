@@ -8,32 +8,40 @@
         <h1>Pick your games</h1>
         <form method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="form-group">
-                {{ form.joker.errors }}
-                <label for="{{ form.joker.id_for_label }}">Joker</label>
+            {% if form.non_field_errors %}
+                <div class="has-danger">
+                    <div class="form-control-feedback">
+                    {{ form.non_field_errors }}
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <div class="form-group {% if form.joker.errors %} has-danger {% endif %}">
+                <label class="form-control-label" for="{{ form.joker.id_for_label }}">Joker</label>
                 {{ form.joker }}
+                <div class="form-control-feedback">{{ form.joker.errors }}</div>
             </div>
 
-            <div class="form-group">
-                {{ form.pick1.errors }}
-                <label for="{{ form.pick1.id_for_label }}">Pick 1</label>
+            <div class="form-group {% if form.pick1.errors %} has-danger {% endif %}">
+                <label class="form-control-label" for="{{ form.pick1.id_for_label }}">Pick 1</label>
                 {{ form.pick1 }}
+                <div class="form-control-feedback">{{ form.pick1.errors }}</div>
             </div>
 
-            <div class="form-group">
-                {{ form.pick2.errors }}
-                <label for="{{ form.pick2.id_for_label }}">Pick 2</label>
+            <div class="form-group {% if form.pick2.errors %} has-danger {% endif %}">
+                <label class="form-control-label" for="{{ form.pick2.id_for_label }}">Pick 2</label>
                 {{ form.pick2 }}
+                <div class="form-control-feedback">{{ form.pick2.errors }}</div>
             </div>
 
-            <div class="form-group">
-                {{ form.pick3.errors }}
-                <label for="{{ form.pick3.id_for_label }}">Pick 3</label>
+            <div class="form-group {% if form.pick3.errors %} has-danger {% endif %}">
+                <label class="form-control-label" for="{{ form.pick3.id_for_label }}">Pick 3</label>
                 {{ form.pick3 }}
+                <div class="form-control-feedback">{{ form.pick3.errors }}</div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button class="btn btn-primary">Submit</button>
         </form>
     {% endif %}
     </div>
