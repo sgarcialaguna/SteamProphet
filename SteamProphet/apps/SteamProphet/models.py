@@ -14,6 +14,9 @@ class Player(models.Model):
 class Week(models.Model):
     week = models.PositiveSmallIntegerField(primary_key=True)
 
+    class Meta(object):
+        ordering = ('week',)
+
     def __str__(self):
         return 'Week {}'.format(self.week)
 
