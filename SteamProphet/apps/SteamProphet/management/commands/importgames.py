@@ -13,7 +13,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         latestGame = Game.objects.order_by('-week').first()
-        latestWeek = latestGame.week if latestGame else None
+        latestWeek = latestGame.week.last() if latestGame else None
         weekNumber = latestWeek.week + 1 if latestWeek else 1
         weekObject = Week.objects.get_or_create(week=weekNumber)[0]
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
