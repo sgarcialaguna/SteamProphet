@@ -133,11 +133,12 @@ class CreatePicksView(FormView):
 
     def form_valid(self, form):
         player = Player.objects.get_or_create(user=self.request.user, defaults={'name': self.request.user.username})[0]
-        Pick.objects.filter(week=self.currentVotingPeriod, player=player).delete()
-        Pick.objects.create(week=self.currentVotingPeriod, player=player, joker=True, game=form.cleaned_data['joker'])
-        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick1'])
-        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick2'])
-        Pick.objects.create(week=self.currentVotingPeriod, player=player, game=form.cleaned_data['pick3'])
+        week = self.currentVotingPeriod.week
+        Pick.objects.filter(week=week, player=player).delete()
+        Pick.objects.create(week=week, player=player, joker=True, game=form.cleaned_data['joker'])
+        Pick.objects.create(week=week, player=player, game=form.cleaned_data['pick1'])
+        Pick.objects.create(week=week, player=player, game=form.cleaned_data['pick2'])
+        Pick.objects.create(week=week, player=player, game=form.cleaned_data['pick3'])
         return super(CreatePicksView, self).form_valid(form)
 
 

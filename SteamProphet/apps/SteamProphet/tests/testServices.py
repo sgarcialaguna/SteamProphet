@@ -52,9 +52,9 @@ class TestServices(TestCase):
             start=now - datetime.timedelta(days=7),
             end=now - datetime.timedelta(days=10)
         )
-        VotingPeriod.objects.create(
+        votingPeriod2 = VotingPeriod.objects.create(
             week=week2,
             start=now - datetime.timedelta(days=2),
             end=now + datetime.timedelta(days=1),
         )
-        self.assertEqual(week2, services.getCurrentVotingPeriod())
+        self.assertEqual(votingPeriod2, services.getCurrentVotingPeriod())

@@ -36,7 +36,7 @@ def getCurrentVotingPeriod():
     now = django.utils.timezone.now()
     for votingPeriod in VotingPeriod.objects.all():
         if votingPeriod.start < now < votingPeriod.end:
-            return votingPeriod.week
+            return votingPeriod
 
 
 def createPlayer(strategy, details, user=None, *args, **kwargs):
