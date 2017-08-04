@@ -4,18 +4,24 @@
     <div class="container">
         <form method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="form-group">
+            {% if form.non_field_errors %}
+                <div class="has-danger">
+                    <div class="form-control-feedback">
+                    {{ form.non_field_errors }}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="form-group {% if form.name.errors %} has-danger {% endif %}">
                 <label for="{{ form.name.id_for_label }}">Enter your nickname</label>
-                {{ form.name.errors }}
                 {{ form.name }}
+                <div class="form-control-feedback">{{ form.name.errors }}</div>
             </div>
 
             <p>
                 This name will be shown to other users. By default, your nickname is a random string.
             </p>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button class="btn btn-primary">Submit</button>
         </form>
     </div>
 {% endblock %}
