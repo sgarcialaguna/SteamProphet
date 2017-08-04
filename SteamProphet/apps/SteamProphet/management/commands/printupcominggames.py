@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        week = Game.objects.order_by('-week__week').first().week
-        games = Game.objects.filter(week=week)
-        for game in games:
+        # week = Game.objects.order_by('-week__week').first().week.first()
+        # games = Game.objects.filter(week=week)
+        for game in Game.objects.all():
             print('[URL=https://store.steampowered.com/app/{}/]{}[/URL]'.format(game.appID, game.name))
