@@ -38,6 +38,9 @@
                     <a class="nav-link" href="{% url 'create_picks' %}">Create Picks</a>
                 </li>
             {% endif %}
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'pick_overview' %}">Pick Overview</a>
+            </li>
         </ul>
         <span class="navbar-text">
             {% if user.is_authenticated %}

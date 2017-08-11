@@ -172,3 +172,36 @@ class LoginView(TemplateView):
 
 class PrivacyView(TemplateView):
     template_name = 'SteamProphet/privacy.html'
+
+
+class PickOverviewView(TemplateView):
+    template_name = 'SteamProphet/pick_overview.html'
+
+    def get_context_data(self, **kwargs):
+        return {'games': self.get_games()}
+
+    def get_games(self):
+        games = []
+
+        weekToExclude = self.get_week_to_exclude()
+
+        for game in Game.objects.all():
+            if weekToExclude is None:
+                game.picked = game.pick_set.count()
+                game.pickedAsJoker = game.pick_set.filter(joker=True).count()
+            else:
+                game.picked = game.pick_set.exclude(week=weekToExclude).count()
+                game.pickedAsJoker = game.pick_set.filter(joker=True).exclude(week=weekToExclude).count()
+            if game.picked > 0:
+                games.append(game)
+        return sorted(games, key=attrgetter('picked'), reverse=True)
+
+    def get_week_to_exclude(self):
+        if self.request.user.is_staff:
+            return None
+
+        currentVotingPeriod = services.getCurrentVotingPeriod()
+        if currentVotingPeriod is None:
+            return None
+
+        return currentVotingPeriod.week

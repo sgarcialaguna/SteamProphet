@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^player/(?P<pk>\d+)/$', views.PlayerDetailView.as_view(), name='player'),
     url(r'^delete_game/(?P<pk>\d+)/$', views.DeleteGameView.as_view(), name='delete_game'),
     url(r'^create_picks/$', views.CreatePicksView.as_view(), name='create_picks'),
-    url(r'^player_profile/', views.PlayerProfileView.as_view(), name='player_profile')
+    url(r'^player_profile/', views.PlayerProfileView.as_view(), name='player_profile'),
+    url(r'^pick_overview/', views.PickOverviewView.as_view(), name='pick_overview')
 ]
