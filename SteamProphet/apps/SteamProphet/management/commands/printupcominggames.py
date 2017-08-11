@@ -14,5 +14,5 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        for game in Game.objects.all(week=self.getWeek()):
+        for game in Game.objects.filter(week=self.getWeek()):
             print('[URL=https://store.steampowered.com/app/{}/]{}[/URL]'.format(game.appID, game.name))
