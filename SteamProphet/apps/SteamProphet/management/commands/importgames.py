@@ -10,12 +10,14 @@ from SteamProphet.apps.SteamProphet.models import Game, Week
 class Command(BaseCommand):
     help = 'Imports the upcoming games'
 
+    def getWeek(self):
+        for week in Week.objects.order_by('-week'):
+            if week.game_set.exists():
+                return Week.objects.get(week=week.week+1)
+
     @transaction.atomic
     def handle(self, *args, **options):
-        latestGame = Game.objects.order_by('-week').first()
-        latestWeek = latestGame.week.last() if latestGame else None
-        weekNumber = latestWeek.week + 1 if latestWeek else 1
-        weekObject = Week.objects.get_or_create(week=weekNumber)[0]
+        weekObject = self.getWeek()
         upcomingGamesJSON = requests.get('https://www.steamprophet.com/api/upcoming').json()
         nextMonday = now().date() + relativedelta.relativedelta(weekday=relativedelta.MO)
         nextSunday = nextMonday + relativedelta.relativedelta(weekday=relativedelta.SU)
