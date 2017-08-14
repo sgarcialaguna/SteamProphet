@@ -180,15 +180,12 @@ class PickOverviewView(TemplateView):
     def get_context_data(self, **kwargs):
         return {'games': self.get_games()}
 
-    def get_games_queryset(self):
-        return Game.objects.filter(pick__isnull=False).distinct()
-
     def get_games(self):
         games = []
 
         weekToExclude = self.get_week_to_exclude()
 
-        for game in self.get_games_queryset():
+        for game in Game.objects.filter(pick__isnull=False).distinct():
             if weekToExclude is None:
                 game.picked = game.pick_set.count()
                 game.pickedAsJoker = game.pick_set.filter(joker=True).count()
@@ -197,7 +194,7 @@ class PickOverviewView(TemplateView):
                 game.pickedAsJoker = game.pick_set.filter(joker=True).exclude(week=weekToExclude).count()
             if game.picked > 0:
                 games.append(game)
-        return sorted(games, key=attrgetter('picked'), reverse=True)
+        return sorted(games, key=attrgetter('picked', 'pickedAsJoker'), reverse=True)
 
     def get_week_to_exclude(self):
         if self.request.user.is_staff:
@@ -211,6 +208,20 @@ class PickOverviewView(TemplateView):
 
 
 class PickOverviewByWeekView(PickOverviewView):
-    def get_games_queryset(self):
-        weekNumber = get_object_or_404(Week, week=self.kwargs['week'])
-        return super().get_games_queryset().filter(week=weekNumber)
+    def get_games(self):
+        games = []
+
+        weekToExclude = self.get_week_to_exclude()
+
+        week = get_object_or_404(Week, week=self.kwargs['week'])
+        for game in Game.objects.filter(pick__isnull=False).filter(week=week).distinct():
+            if weekToExclude is None:
+                game.picked = game.pick_set.filter(week=week).count()
+                game.pickedAsJoker = game.pick_set.filter(week=week).filter(joker=True).count()
+            else:
+                game.picked = game.pick_set.filter(week=week).exclude(week=weekToExclude).count()
+                game.pickedAsJoker = game.pick_set.filter(week=week).filter(joker=True).\
+                    exclude(week=weekToExclude).count()
+            if game.picked > 0:
+                games.append(game)
+        return sorted(games, key=attrgetter('picked', 'pickedAsJoker'), reverse=True)
