@@ -36,3 +36,7 @@ main > .container {
     list-style-type: none;
     padding-left: 0;
 }
+
+.weekRow {
+    max-width: 400px;
+}

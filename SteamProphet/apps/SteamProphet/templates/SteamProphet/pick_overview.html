@@ -7,6 +7,14 @@
 
 {% block content %}
     <div class="container">
+        <div class="weekRow d-flex justify-content-between mb-4">
+            <a href="{% url 'pick_overview' %}">All Picks</a>
+            <a href="{% url 'pick_overview_by_week' 1%}">Week 1</a>
+            <a href="{% url 'pick_overview_by_week' 2%}">Week 2</a>
+            <a href="{% url 'pick_overview_by_week' 3%}">Week 3</a>
+            <a href="{% url 'pick_overview_by_week' 4%}">Week 4</a>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -26,13 +34,11 @@
                         <td>{{ game.picked }}</td>
                         <td>{{ game.pickedAsJoker }}</td>
                     </tr>
+                {% empty %}
+                No picks yet
                 {% endfor %}
             </tbody>
         </table>
-
-        <p>
-            Games marked with an asterisk have matured and will earn no more points.
-        </p>
 
     </div>
 {% endblock %}

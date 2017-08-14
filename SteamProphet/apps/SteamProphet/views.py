@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DeleteView, DetailView, FormView, ListView, TemplateView
 
 from SteamProphet.apps.SteamProphet import forms, services
-from SteamProphet.apps.SteamProphet.models import Game, Pick, Player
+from SteamProphet.apps.SteamProphet.models import Game, Pick, Player, Week
 
 
 class GameDetailView(DetailView):
@@ -180,12 +180,15 @@ class PickOverviewView(TemplateView):
     def get_context_data(self, **kwargs):
         return {'games': self.get_games()}
 
+    def get_games_queryset(self):
+        return Game.objects.filter(pick__isnull=False).distinct()
+
     def get_games(self):
         games = []
 
         weekToExclude = self.get_week_to_exclude()
 
-        for game in Game.objects.all():
+        for game in self.get_games_queryset():
             if weekToExclude is None:
                 game.picked = game.pick_set.count()
                 game.pickedAsJoker = game.pick_set.filter(joker=True).count()
@@ -205,3 +208,9 @@ class PickOverviewView(TemplateView):
             return None
 
         return currentVotingPeriod.week
+
+
+class PickOverviewByWeekView(PickOverviewView):
+    def get_games_queryset(self):
+        weekNumber = get_object_or_404(Week, week=self.kwargs['week'])
+        return super().get_games_queryset().filter(week=weekNumber)
