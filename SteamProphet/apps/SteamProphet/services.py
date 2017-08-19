@@ -17,6 +17,8 @@ def computePlayerScore(player, onlyMaturedGames=False):
     picks = player.pick_set
     if onlyMaturedGames:
         picks = picks.filter(game__matured=True)
+    if getCurrentVotingPeriod():
+        picks = picks.exclude(week=getCurrentVotingPeriod().week)
     for pick in picks.all():
         gameScore = computePickScore(pick)
         score += gameScore
