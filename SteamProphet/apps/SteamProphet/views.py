@@ -217,10 +217,10 @@ class PickOverviewByWeekView(PickOverviewView):
         for game in Game.objects.filter(pick__isnull=False).filter(week=week).distinct():
             if weekToExclude is None:
                 game.picked = game.pick_set.filter(week=week).count()
-                game.pickedAsJoker = game.pick_set.filter(week=week).filter(joker=True).count()
+                game.pickedAsJoker = game.pick_set.filter(week=week, joker=True).count()
             else:
                 game.picked = game.pick_set.filter(week=week).exclude(week=weekToExclude).count()
-                game.pickedAsJoker = game.pick_set.filter(week=week).filter(joker=True).\
+                game.pickedAsJoker = game.pick_set.filter(week=week, joker=True).\
                     exclude(week=weekToExclude).count()
             if game.picked > 0:
                 games.append(game)
