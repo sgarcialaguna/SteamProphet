@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 self.saveHistory(game)
                 game.save()
                 # Rate limiter
-                time.sleep(0.5)
+                time.sleep(1)
             except:
                 print('Could not update game {}'.format(game.name))
 
