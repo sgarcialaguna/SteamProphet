@@ -61,7 +61,7 @@ class Command(BaseCommand):
         if not game.releaseDate or gameData['release_date']['coming_soon']:
             return
         today = now().date()
-        if (today - game.releaseDate).days >= 28:
+        if (today - game.releaseDate).days >= 21:
             game.matured = True
 
     def saveHistory(self, game):
