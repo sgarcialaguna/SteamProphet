@@ -14,6 +14,7 @@ class Command(BaseCommand):
         for week in Week.objects.order_by('-week'):
             if week.game_set.exists():
                 return Week.objects.get(week=week.week+1)
+        return Week.objects.get(week=1)
 
     @transaction.atomic
     def handle(self, *args, **options):
