@@ -32,7 +32,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         games = []
         for game in Game.objects.filter(week=self.getWeek()):
-            game.url = 'https://store.steampowered.com/app/{}/{}'.format(game.appID, game.name)
+            game.url = 'https://store.steampowered.com/app/{}/'.format(game.appID)
             game.followers = getFollowers(game)
             games.append(game)
         games = sorted(games, key=attrgetter('followers'), reverse=True)
