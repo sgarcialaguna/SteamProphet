@@ -30,7 +30,7 @@ def savePlayerHistory(player):
     latestEntry = {
         'score': services.computePlayerScore(player),
         'timestamp': timestamp,
-        'position': allPlayers.index(player)
+        'position': allPlayers.index(player) + 1
     }
     if history and history[-1]['timestamp'] == timestamp:
         history[-1] = latestEntry
