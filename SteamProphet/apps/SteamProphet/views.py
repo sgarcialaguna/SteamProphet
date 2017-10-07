@@ -40,6 +40,7 @@ class PlayerDetailView(DetailView):
         grouped_picks = {k: list(v) for k, v in itertools.groupby(picks, attrgetter('week.week'))}
         grouped_picks = OrderedDict(sorted(grouped_picks.items(), reverse=True))
         context['groupedPicks'] = grouped_picks
+        context['numberOfPlayers'] = Player.objects.count()
         return context
 
     def getPicks(self, player):
