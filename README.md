@@ -8,7 +8,7 @@ via environment variable.
 ## Necessary database objects
 
 Create an admin user with `python manage.py superuser`  
-Add 4 Week objects for each week. These are needed because a game can appear in several weeks.  
+Add 4 Week objects, one for each week the game runs in. These are needed because a game can appear in several weeks.  
 Add a voting period for each voting period. Voting will be unlocked during these times.  
 
 ## Management commands
