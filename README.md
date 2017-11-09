@@ -7,8 +7,8 @@ via environment variable.
 
 ## Necessary database objects
 
-Initialize the database with `python manage.py migrate`
-Create an admin user with `python manage.py createsuperuser`
+Initialize the database with `python manage.py migrate`  
+Create an admin user with `python manage.py createsuperuser`  
 Add 4 Week objects, one for each week the game runs in. These are needed because a game can appear in several weeks.  
 Add a voting period for each voting period. Voting will be unlocked during these times.  
 
